@@ -1,0 +1,94 @@
+version: "3.9"
+
+services:
+  minio:
+    container_name: minio
+    image: minio/minio:RELEASE.2022-10-08T20-11-00Z
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    entrypoint: sh
+    command: -c "/opt/bin/minio server /export --address :9000 --console-address :9001"
+    volumes:
+      - ./docker/external-service/minio/data:/export
+
+  postgres:
+    container_name: postgres
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/external-service/postgres/init:/docker-entrypoint-initdb.d
+      - ./docker/external-service/postgres/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  relay-server:
+    container_name: relay-server
+    restart: always
+    build:
+      context: ./docker/relay-server
+      dockerfile: Dockerfile
+    stdin_open: true
+    volumes:
+      - ./relay-server:/relay-server
+      - ./.env:/relay-server/.env
+    ports:
+      - 8000:8080
+
+  application-authentication-server:
+    container_name: application-authentication-server
+    restart: always
+    build:
+      context: ./docker/application-authentication-server
+      dockerfile: Dockerfile
+    stdin_open: true
+    volumes:
+      - ./application-authentication-server:/application-authentication-server
+      - ./.env:/application-authentication-server/.env
+    ports:
+      - 8001:8080
+
+  area-estimation-server:
+    container_name: area-estimation-server
+    restart: always
+    build: 
+      context: ./docker/area-estimation-server
+      dockerfile: Dockerfile
+    stdin_open: true
+    volumes:
+      - ./area-estimation-server:/area-estimation-server
+      - ./.env:/area-estimation-server/.env
+    ports:
+      - 8002:8000
+
+  spot-estimation-server:
+    container_name: spot-estimation-server
+    restart: always
+    build: 
+      context: ./docker/spot-estimation-server
+      dockerfile: Dockerfile
+    stdin_open: true
+    volumes:
+      - ./spot-estimation-server:/spot-estimation-server
+      - ./.env:/spot-estimation-server/.env
+    ports:
+      - 8003:8000
+
+  object-server:
+    container_name: object-server
+    restart: always
+    build: 
+      context: ./docker/object-server
+      dockerfile: Dockerfile
+    stdin_open: true
+    volumes:
+      - ./object-server:/object-server
+      - ./.env:/object-server/.env
+    ports:
+      - 8004:3000

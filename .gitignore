@@ -1,0 +1,3 @@
+docker/external-service/minio/data/
+docker/external-service/postgres/data/
+.env
