@@ -1,3 +1,5 @@
+from typing import List
+
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.fp_model.aggregate import FpModelAggregateFactory
 from domain.models.raw_data.aggregate import RawDataAggregate
@@ -28,7 +30,7 @@ class GetSpotBySpotIdCollectionService:
         raw_data: RawDataAggregate,
         application: ApplicationAggregate,
         spot_collection: SpotCollectionAggregate,
-    ) -> SpotAggregate | None:
+    ) -> List[SpotAggregate] | None:
         conn = DBConnection().connect()
         s3 = MinioConnection().connect()
 
@@ -58,7 +60,7 @@ class GetSpotBySpotIdCollectionService:
                 conn=conn,
                 spot_id=spot_collection.get_id_collection_of_private_value()[0],
             )
-            return spot
+            return [spot]
 
         # FPモデルを元にスポットを一意に特定する
         spot_collection.identify_spot_by_fp_model(
@@ -69,9 +71,9 @@ class GetSpotBySpotIdCollectionService:
             fp_model_repository=self.__fp_model_repository,
         )
 
-        spot = self.__spot_repository.find_for_spot_id(
+        spot_list = spot_collection.generate_spot_aggregate_list(
             conn=conn,
-            spot_id=spot_collection.get_id_collection_of_private_value()[0],
+            spot_repository=self.__spot_repository,
         )
 
-        return spot
+        return spot_list

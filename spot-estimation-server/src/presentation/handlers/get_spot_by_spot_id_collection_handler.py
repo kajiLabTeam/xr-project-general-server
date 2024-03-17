@@ -12,18 +12,21 @@ from infrastructure.repository.fp_model_repository import FpModelRepository
 from infrastructure.repository.spot_repository import SpotRepository
 from infrastructure.repository.transmitter_repository import \
     TransmitterRepository
-from presentation.error.error_response import ErrorResponse
 from presentation.middleware.application_middleware import get_credential
 from pydantic import BaseModel
 
 
-class GetSpotBySpotIdCollectionResponse(BaseModel):
+class SpotItem(BaseModel):
     id: str
     name: str
     floor: int
     locationType: str
     latitude: float
     longitude: float
+
+
+class GetSpotBySpotIdCollectionResponse(BaseModel):
+    spots: List[SpotItem]
 
 
 router = APIRouter()
@@ -54,28 +57,33 @@ async def get_spot_by_spot_id_collection(
         application_id, secret_key = credentials
         application = ApplicationAggregate(application_id, secret_key)
 
-        spot = get_spot_by_spot_id_collection_service.run(
+        spot_list = get_spot_by_spot_id_collection_service.run(
             raw_data=raw_data,
             application=application,
             spot_collection=spot_collection,
         )
 
-        if spot is None:
+        if spot_list is None:
             JSONResponse(
                 status_code=404,
-                content=ErrorResponse(
-                    error="Failed to find spot",
+                content=GetSpotBySpotIdCollectionResponse(
+                    spots=[],
                 ),
             )
             return
 
         return GetSpotBySpotIdCollectionResponse(
-            id=spot.get_id_of_private_value().get_id_of_private_value(),
-            name=spot.get_name_of_private_value(),
-            floor=spot.get_floor_of_private_value(),
-            locationType=spot.get_location_type_of_private_value().get_location_type_of_private_value(),
-            latitude=spot.get_coordinate_of_private_value().get_latitude_of_private_value(),
-            longitude=spot.get_coordinate_of_private_value().get_longitude_of_private_value(),
+            spots=[
+                SpotItem(
+                    id=spot.get_id_of_private_value().get_id_of_private_value(),
+                    name=spot.get_name_of_private_value(),
+                    floor=spot.get_floor_of_private_value(),
+                    locationType=spot.get_location_type_of_private_value().get_location_type_of_private_value(),
+                    latitude=spot.get_coordinate_of_private_value().get_latitude_of_private_value(),
+                    longitude=spot.get_coordinate_of_private_value().get_longitude_of_private_value(),
+                )
+                for spot in spot_list
+            ]
         )
 
     except Exception as e:
