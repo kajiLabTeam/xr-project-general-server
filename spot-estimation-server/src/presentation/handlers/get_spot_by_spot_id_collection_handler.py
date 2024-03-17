@@ -1,21 +1,20 @@
 from typing import Annotated, List, Tuple
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-
 from application.services.get_spot_by_spot_id_collection_service import \
     GetSpotBySpotIdCollectionService
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.raw_data.aggregate import RawDataAggregateFactory
 from domain.models.spot_collection.aggregate import \
     SpotCollectionAggregateFactory
+from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
+from fastapi.responses import JSONResponse
 from infrastructure.repository.fp_model_repository import FpModelRepository
 from infrastructure.repository.spot_repository import SpotRepository
 from infrastructure.repository.transmitter_repository import \
     TransmitterRepository
 from presentation.error.error_response import ErrorResponse
 from presentation.middleware.application_middleware import get_credential
+from pydantic import BaseModel
 
 
 class GetSpotBySpotIdCollectionResponse(BaseModel):

@@ -1,10 +1,9 @@
-from ulid import ULID
-
 from domain.models.fp_model.fp_model_id import FpModelAggregateId
 from domain.models.spot.coordinate import Coordinate
 from domain.models.spot.location_type import LocationType
 from domain.models.spot.spot_id import SpotAggregateId
 from domain.models.transmitter.aggregate import TransmitterAggregate
+from ulid import ULID
 
 
 class SpotAggregate:

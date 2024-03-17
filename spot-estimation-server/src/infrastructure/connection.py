@@ -1,10 +1,9 @@
 from typing import Any
 
 import boto3  # type: ignore
+from config.env import MinioEnv, PostgresEnv
 from psycopg2 import connect
 from psycopg2.extensions import connection
-
-from config.env import MinioEnv, PostgresEnv
 
 
 class DBConnection:
@@ -23,13 +22,6 @@ class DBConnection:
 class MinioConnection:
     @staticmethod
     def connect() -> Any:
-        print("MinioConnection.connect")
-        print(MinioEnv().get_service_name_of_private_value())
-        print(MinioEnv().get_endpoint_of_private_value())
-        print(MinioEnv().get_access_key_of_private_value())
-        print(MinioEnv().get_secret_key_of_private_value())
-        print(MinioEnv().get_region_of_private_value())
-        
         env = MinioEnv()
         return boto3.client(  # type: ignore
             service_name=env.get_service_name_of_private_value(),

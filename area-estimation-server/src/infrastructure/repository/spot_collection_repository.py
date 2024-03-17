@@ -1,7 +1,5 @@
 from typing import List
 
-from psycopg2.extensions import connection
-
 from domain.model.spot.aggregate import SpotAggregateFactory
 from domain.model.spot.coordinate import Coordinate
 from domain.model.spot_collection.aggregate import (
@@ -12,6 +10,7 @@ from infrastructure.error.infrastructure_error import (InfrastructureError,
                                                        InfrastructureErrorType)
 from infrastructure.gateway.coordinate_gateway import CoordinateGateway
 from infrastructure.gateway.spot_gateway import SpotGateway
+from psycopg2.extensions import connection
 
 spot_gateway = SpotGateway()
 coordinate_gateway = CoordinateGateway()

@@ -2,7 +2,6 @@ from io import BytesIO
 
 import numpy as np
 import pandas as pd
-
 from config.const import FP_MODEL_STD_DEV_THRESHOLD
 from domain.error.domain_error import DomainError, DomainErrorType
 from domain.models.fp_model.fp_model_id import FpModelAggregateId

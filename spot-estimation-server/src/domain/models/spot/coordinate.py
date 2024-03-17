@@ -1,6 +1,5 @@
-from ulid import ULID
-
 from domain.error.domain_error import DomainError, DomainErrorType
+from ulid import ULID
 
 
 class Coordinate:

@@ -1,7 +1,5 @@
 from typing import Any
 
-from psycopg2.extensions import connection
-
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.fp_model.aggregate import FpModelAggregate
 from domain.models.spot.spot_id import SpotAggregateId
@@ -10,6 +8,7 @@ from domain.repository_impl.fp_model_repository_impl import \
 from infrastructure.error.infrastructure_error import (InfrastructureError,
                                                        InfrastructureErrorType)
 from infrastructure.gateway.fp_model_gateway import FpModelGateway
+from psycopg2.extensions import connection
 
 fp_model_gateway = FpModelGateway()
 

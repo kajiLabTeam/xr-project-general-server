@@ -37,6 +37,9 @@ export class ObjectRepository implements ObjectRepositoryImpl {
 
       const objectViewUrlRecord =
         await preSignedUrlGateway.publishViewPresignedUrl(s3, fileName);
+      if (!objectViewUrlRecord) {
+        return undefined;
+      }
 
       return new ObjectAggregate(
         ObjectAggregate.extensionFromStr(objectRecordExtension),

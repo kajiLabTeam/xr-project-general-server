@@ -1,9 +1,8 @@
 from abc import ABCMeta, abstractmethod
 
-from psycopg2.extensions import connection
-
 from domain.models.spot.aggregate import SpotAggregate
 from domain.models.spot.spot_id import SpotAggregateId
+from psycopg2.extensions import connection
 
 
 class SpotRepositoryImpl(metaclass=ABCMeta):

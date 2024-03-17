@@ -1,18 +1,17 @@
 from typing import Annotated, Tuple
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
-from pydantic import BaseModel
-
 from application.services.create_spot_service import CreateSpotService
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.raw_data.aggregate import RawDataAggregateFactory
 from domain.models.spot.aggregate import SpotAggregateFactory
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from infrastructure.repository.fp_model_repository import FpModelRepository
 from infrastructure.repository.raw_data_repository import RawDataRepository
 from infrastructure.repository.spot_repository import SpotRepository
 from infrastructure.repository.transmitter_repository import \
     TransmitterRepository
 from presentation.middleware.application_middleware import get_credential
+from pydantic import BaseModel
 
 
 class CreateSpotResponse(BaseModel):

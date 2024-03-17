@@ -8,5 +8,3 @@ RUN mkdir /object-server
 WORKDIR /object-server
 
 CMD ["npm", "start"]
-
-

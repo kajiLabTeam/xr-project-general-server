@@ -1,8 +1,7 @@
-from ulid import ULID
-
 from domain.model.spot.coordinate import Coordinate
 from domain.model.spot.location_type import LocationType
 from domain.model.spot.spot_id import SpotAggregateId
+from ulid import ULID
 
 
 class SpotAggregate:

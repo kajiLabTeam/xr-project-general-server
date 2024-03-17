@@ -1,13 +1,12 @@
+from domain.error.domain_error import DomainError
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from starlette.requests import Request
-
-from domain.error.domain_error import DomainError
 from infrastructure.error.infrastructure_error import InfrastructureError
 from presentation.handlers.create_sopt_hadler import \
     router as create_spot_router
 from presentation.handlers.get_spot_by_spot_id_collection_handler import \
     router as get_spot_by_spot_id_collection_router
+from starlette.requests import Request
 
 app = FastAPI()
 

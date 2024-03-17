@@ -1,8 +1,5 @@
 from typing import Any, List
 
-from psycopg2.extensions import connection
-from ulid import ULID
-
 from domain.error.domain_error import DomainError, DomainErrorType
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.fp_model.aggregate import FpModelAggregate
@@ -13,6 +10,8 @@ from domain.repository_impl.fp_model_repository_impl import \
     FpModelRepositoryImpl
 from domain.repository_impl.transmitter_repository_impl import \
     TransmitterRepositoryImpl
+from psycopg2.extensions import connection
+from ulid import ULID
 
 
 class SpotCollectionAggregate:

@@ -1,10 +1,9 @@
 from typing import List, Optional
 
-from psycopg2.extensions import connection
-
 from infrastructure.record.transmitter_record import (BleRecord,
                                                       TransmitterRecord,
                                                       WifiRecord)
+from psycopg2.extensions import connection
 from utils.ulid import generate_ulid
 
 

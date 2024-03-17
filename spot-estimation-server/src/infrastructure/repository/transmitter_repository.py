@@ -1,7 +1,5 @@
 from typing import List
 
-from psycopg2.extensions import connection
-
 from domain.models.spot.spot_id import SpotAggregateId
 from domain.models.transmitter.aggregate import (
     TransmitterAggregate, TransmitterAggregateInfrastructureFactory)
@@ -13,6 +11,7 @@ from infrastructure.error.infrastructure_error import (InfrastructureError,
                                                        InfrastructureErrorType)
 from infrastructure.gateway.transmitter_gateway import TransmitterGateway
 from infrastructure.record.transmitter_record import TransmitterRecordFactory
+from psycopg2.extensions import connection
 
 transmitter_gateway = TransmitterGateway()
 

@@ -5,7 +5,6 @@ from os import remove
 from typing import Tuple
 
 import pandas as pd
-
 from config.const import (FP_MODEL_TEMPORARY_SAVING_PATH,
                           TRANSMITTER_THRESHOLD_NUMBER)
 from domain.models.raw_data.raw_data_id import RawDataId

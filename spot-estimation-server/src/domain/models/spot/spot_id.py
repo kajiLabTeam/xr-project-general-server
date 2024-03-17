@@ -1,5 +1,4 @@
 from ulid import ULID
-
 from utils.ulid import generate_ulid
 
 

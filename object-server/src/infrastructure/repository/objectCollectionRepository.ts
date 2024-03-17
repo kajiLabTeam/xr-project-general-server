@@ -29,40 +29,36 @@ export class ObjectCollectionRepository
       return undefined;
     }
 
-    return new ObjectCollectionAggregate(
-      await Promise.all(
-        objectCollectionRecord.map(async (objectRecord) => {
-          const objectRecordId = objectRecord.getIdOfPrivateValue();
-          const objectRecordExtension =
-            objectRecord.getExtensionOfPrivateValue();
-          const objectRecordUserId = objectRecord.getUserIdOfPrivateValue();
-          const objectRecordSpotId = objectRecord.getSpotIdOfPrivateValue();
+    const objectCollectionAggregate = new ObjectCollectionAggregate([]);
 
-          const fileName = `${objectRecordId}.${objectRecordExtension}`;
+    for (const objectRecord of objectCollectionRecord) {
+      const objectRecordId = objectRecord.getIdOfPrivateValue();
+      const objectRecordExtension = objectRecord.getExtensionOfPrivateValue();
+      const objectRecordUserId = objectRecord.getUserIdOfPrivateValue();
+      const objectRecordSpotId = objectRecord.getSpotIdOfPrivateValue();
 
-          try {
-            const objectViewUrlRecord =
-              await preSignedUrlGateway.publishViewPresignedUrl(s3, fileName);
+      const fileName = `${objectRecordId}.${objectRecordExtension}`;
 
-            return new ObjectAggregate(
-              ObjectAggregate.extensionFromStr(objectRecordExtension),
-              new UserAggregate(
-                UserAggregate.userIdFromStr(objectRecordUserId),
-              ),
-              ObjectAggregate.spotIdFromStr(objectRecordSpotId),
-              ObjectAggregate.idFromStr(objectRecordId),
-              ObjectAggregate.preSignedUrlFromStr(
-                objectViewUrlRecord.getUrlOfPrivateValue(),
-              ),
-            );
-          } catch (e) {
-            throw new InfrastructureError(
-              'FailedToPublishViewPresignedUrl',
-              'FailedToPublishViewPresignedUrl',
-            );
-          }
-        }),
-      ),
-    );
+      const objectViewUrlRecord =
+        await preSignedUrlGateway.publishViewPresignedUrl(s3, fileName);
+
+      if (!objectViewUrlRecord) {
+        return undefined;
+      } else {
+        objectCollectionAggregate.addObject(
+          new ObjectAggregate(
+            ObjectAggregate.extensionFromStr(objectRecordExtension),
+            new UserAggregate(UserAggregate.userIdFromStr(objectRecordUserId)),
+            ObjectAggregate.spotIdFromStr(objectRecordSpotId),
+            ObjectAggregate.idFromStr(objectRecordId),
+            ObjectAggregate.preSignedUrlFromStr(
+              objectViewUrlRecord.getUrlOfPrivateValue(),
+            ),
+          ),
+        );
+      }
+    }
+
+    return objectCollectionAggregate;
   }
 }

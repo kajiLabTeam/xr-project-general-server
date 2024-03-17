@@ -1,5 +1,3 @@
-from psycopg2.extensions import connection
-
 from domain.models.spot.aggregate import SpotAggregate, SpotAggregateFactory
 from domain.models.spot.spot_id import SpotAggregateId
 from domain.repository_impl.spot_repository_impl import SpotRepositoryImpl
@@ -7,6 +5,7 @@ from infrastructure.error.infrastructure_error import (InfrastructureError,
                                                        InfrastructureErrorType)
 from infrastructure.gateway.coordinate_gateway import CoordinateGateway
 from infrastructure.gateway.spot_gateway import SpotGateway
+from psycopg2.extensions import connection
 
 spot_gateway = SpotGateway()
 coordinate_gateway = CoordinateGateway()

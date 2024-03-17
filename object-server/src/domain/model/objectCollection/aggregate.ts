@@ -6,7 +6,7 @@ export class ObjectCollectionAggregate {
   private _id: ObjectCollectionId;
   private _objects: ObjectAggregate[];
 
-  constructor(_objects: ObjectAggregate[]) {
+  constructor(_objects: ObjectAggregate[] | []) {
     this._id = new ObjectCollectionId();
     this._objects = _objects;
   }

@@ -9,8 +9,6 @@ RUN mkdir /area-estimation-server
 
 WORKDIR /area-estimation-server
 
-ADD . /area-estimation-server
-
 ENV LANG ja_JP.UTF-8
 ENV LANGUAGE ja_JP:ja
 ENV LC_ALL ja_JP.UTF-8

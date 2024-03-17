@@ -2,11 +2,10 @@ from io import BytesIO
 from typing import Any, Optional
 
 import psycopg2.sql as sql
-from psycopg2.extensions import connection
-
 from config.const import APPLICATION_BUCKET_NAME, FP_MODEL_BUCKET_NAME
 from domain.models.application.aggregate import ApplicationAggregate
 from infrastructure.record.fp_model_record import FpModelRecord
+from psycopg2.extensions import connection
 
 
 class FpModelGateway:

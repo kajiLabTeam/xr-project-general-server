@@ -2,11 +2,10 @@ from io import BytesIO
 from typing import Any, Optional
 
 import psycopg2.sql as sql
-from psycopg2.extensions import connection
-
 from config.const import APPLICATION_BUCKET_NAME, RAW_DATA_FILE_BUCKET_NAME
 from domain.models.application.aggregate import ApplicationAggregate
 from infrastructure.record.raw_data_record import RawDataRecord
+from psycopg2.extensions import connection
 
 
 class RawDataGateway:

@@ -41,7 +41,7 @@ export class PreSignedUrlGateway {
   async publishViewPresignedUrl(
     s3: S3Client,
     key: string,
-  ): Promise<ViewPreSignedUrlRecord> {
+  ): Promise<ViewPreSignedUrlRecord | undefined> {
     try {
       const objectKey = `${Application.id}/${OBJECTS_BUCKET_NAME}/${key}`;
       const url = await getSignedUrl(
@@ -49,9 +49,15 @@ export class PreSignedUrlGateway {
         new GetObjectCommand({
           Bucket: APPLICATION_BUCKET_NAME,
           Key: objectKey,
-        }) as any,
+        }),
         { expiresIn: VIEW_URL_LIFETIME },
       );
+
+      // オブジェクトが存在しない場合はundefinedを返す
+      const response = await fetch(url);
+      if (response.status === 404) {
+        return undefined;
+      }
 
       return new ViewPreSignedUrlRecord(url);
     } catch (e) {

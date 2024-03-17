@@ -1,11 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from typing import Any
 
-from psycopg2.extensions import connection
-
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.raw_data.aggregate import RawDataAggregate
 from domain.models.spot.spot_id import SpotAggregateId
+from psycopg2.extensions import connection
 
 
 class RawDataRepositoryImpl(metaclass=ABCMeta):

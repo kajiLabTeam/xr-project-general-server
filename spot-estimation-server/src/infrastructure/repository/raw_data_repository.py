@@ -1,7 +1,5 @@
 from typing import Any
 
-from psycopg2.extensions import connection
-
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.raw_data.aggregate import RawDataAggregate
 from domain.models.spot.spot_id import SpotAggregateId
@@ -10,6 +8,7 @@ from domain.repository_impl.raw_data_repository_impl import \
 from infrastructure.error.infrastructure_error import (InfrastructureError,
                                                        InfrastructureErrorType)
 from infrastructure.gateway.raw_data_gateway import RawDataGateway
+from psycopg2.extensions import connection
 
 raw_data_gateway = RawDataGateway()
 
