@@ -20,7 +20,8 @@ func (sr *SpotRepository) FindForIdsAndRawDataFile(
 	spotIds []string,
 	rawDataFile []byte,
 	a *application_models_domain.Application,
-) (*spot_models_domain.Spot, error) {
+) (*spot_models_domain.SpotCollection, error) {
+	findForIdsAndRawDataFileResponseFactory := spot_record.FindForIdsAndRawDataFileResponseFactory{}
 	findForIdsAndRawDataFileRes, err := sg.FindForIdsAndRawDataFile(
 		spotIds,
 		rawDataFile,
@@ -33,20 +34,14 @@ func (sr *SpotRepository) FindForIdsAndRawDataFile(
 		return nil, nil
 	}
 
-	resSpot, err := spot_models_domain.NewSpot(
-		&findForIdsAndRawDataFileRes.Id,
-		findForIdsAndRawDataFileRes.Name,
-		&findForIdsAndRawDataFileRes.LocationType,
-		findForIdsAndRawDataFileRes.Floor,
-		findForIdsAndRawDataFileRes.Latitude,
-		findForIdsAndRawDataFileRes.Longitude,
-		nil,
+	resSpotCollection, err := findForIdsAndRawDataFileResponseFactory.ToDomainSpotCollection(
+		findForIdsAndRawDataFileRes,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	return resSpot, nil
+	return resSpotCollection, nil
 }
 
 func (sr *SpotRepository) FindForCoordinateAndRadius(

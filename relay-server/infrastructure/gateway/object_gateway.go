@@ -97,5 +97,3 @@ func (og ObjectGateway) Save(
 
 	return &createObjectRes, nil
 }
-
-

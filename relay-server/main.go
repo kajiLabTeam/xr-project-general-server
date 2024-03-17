@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)
 	}
@@ -18,5 +18,5 @@ func main() {
 	handlers.GetObjectByAreaHandler(r)
 	handlers.CreateObjectHandler(r)
 
-	r.Run()
+	r.Run(":8080")
 }

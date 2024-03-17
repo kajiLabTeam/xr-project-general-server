@@ -78,7 +78,6 @@ func GetObjectByAreaHandler(r *gin.Engine) {
 			}
 
 			c.JSON(http.StatusNotFound, res)
-			return
 		}
 
 		res := GetObjectByAreaResponse{

@@ -22,7 +22,7 @@ type GetObjectBySpotRequest struct {
 
 type GetObjectBySpotResponse struct {
 	UserId      string                      `json:"userId" binding:"required"`
-	SpotObject  common_handler.ViewObject   `json:"spotObject" binding:"required"`
+	SpotObjects []common_handler.ViewObject `json:"spotObjects" binding:"required"`
 	AreaObjects []common_handler.ViewObject `json:"areaObjects" binding:"required"`
 }
 
@@ -64,7 +64,7 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 		}
 
 		// サービスを実行
-		resUser, resObject, resObjectCollection, err := getObjectBySpotService.Run(
+		resUser, resSpotObjectCollection, resAreaObjectCollection, err := getObjectBySpotService.Run(
 			req.Latitude,
 			req.Longitude,
 			rawDataFile,
@@ -76,35 +76,12 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 			return
 		}
 
-		if resObjectCollection == nil && resObject == nil {
+		if resSpotObjectCollection == nil && resAreaObjectCollection == nil {
 			res := GetObjectBySpotResponse{
 				UserId:      resUser.GetId(),
-				SpotObject:  common_handler.ViewObject{},
+				SpotObjects: []common_handler.ViewObject{},
 				AreaObjects: []common_handler.ViewObject{},
 			}
-			c.JSON(http.StatusNotFound, res)
-			return
-		}
-
-		if resObjectCollection == nil && resObject != nil {
-			res := GetObjectBySpotResponse{
-				UserId: resObject.GetId(),
-				SpotObject: common_handler.ViewObject{
-					Id:       resObject.GetId(),
-					PosterId: resObject.GetPosterId(),
-					Spot: common_handler.Spot{
-						Id:           resObject.GetSpot().GetId(),
-						Name:         resObject.GetSpot().GetName(),
-						Floor:        resObject.GetSpot().GetFloor(),
-						LocationType: resObject.GetSpot().GetLocationType(),
-						Latitude:     resObject.GetSpot().GetCoordinate().GetLatitude(),
-						Longitude:    resObject.GetSpot().GetCoordinate().GetLongitude(),
-					},
-					ViewUrl: resObject.GetPreSignedUrl(),
-				},
-				AreaObjects: []common_handler.ViewObject{},
-			}
-
 			c.JSON(http.StatusNotFound, res)
 			return
 		}
@@ -112,21 +89,11 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 		// レスポンスを生成
 		res := GetObjectBySpotResponse{
 			UserId: resUser.GetId(),
-			SpotObject: common_handler.ViewObject{
-				Id:       resObject.GetId(),
-				PosterId: resObject.GetPosterId(),
-				Spot: common_handler.Spot{
-					Id:           resObject.GetSpot().GetId(),
-					Name:         resObject.GetSpot().GetName(),
-					Floor:        resObject.GetSpot().GetFloor(),
-					LocationType: resObject.GetSpot().GetLocationType(),
-					Latitude:     resObject.GetSpot().GetCoordinate().GetLatitude(),
-					Longitude:    resObject.GetSpot().GetCoordinate().GetLongitude(),
-				},
-				ViewUrl: resObject.GetPreSignedUrl(),
-			},
+			SpotObjects: viewObjectCollectionFactory.FromViewObjectCollection(
+				resSpotObjectCollection,
+			),
 			AreaObjects: viewObjectCollectionFactory.FromViewObjectCollection(
-				resObjectCollection,
+				resAreaObjectCollection,
 			),
 		}
 

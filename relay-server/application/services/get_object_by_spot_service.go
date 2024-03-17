@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/kajiLabTeam/xr-project-relay-server/config"
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
-	object_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/object"
 	object_collection_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/object_collection"
 	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/domain/repository_impl"
@@ -32,7 +31,7 @@ func (goss *GetObjectBySpotService) Run(
 	application *application_models_domain.Application,
 ) (
 	*user_models_domain.User,
-	*object_models_domain.Object,
+	*object_collection_models_domain.ObjectCollection,
 	*object_collection_models_domain.ObjectCollection,
 	error,
 ) {
@@ -52,11 +51,11 @@ func (goss *GetObjectBySpotService) Run(
 	}
 
 	// 周辺スポットのIDを取得
-	spotIds := areaSpotCollection.GetSpotIds()
+	areaSpotIds := areaSpotCollection.GetSpotIds()
 
 	// 周辺スポットを元にスポットに紐づくオブジェクトを取得
 	areaObject, err := goss.objectRepo.FindForSpotIds(
-		spotIds,
+		areaSpotIds,
 		user,
 		application,
 	)
@@ -71,8 +70,8 @@ func (goss *GetObjectBySpotService) Run(
 	areaObject.LinkSpots(areaSpotCollection)
 
 	// 周辺スポットをヒントにピンポイントのスポットを取得
-	spot, err := goss.spotRepo.FindForIdsAndRawDataFile(
-		spotIds,
+	spots, err := goss.spotRepo.FindForIdsAndRawDataFile(
+		areaSpotIds,
 		rawDataFile,
 		application,
 	)
@@ -80,16 +79,16 @@ func (goss *GetObjectBySpotService) Run(
 		return user, nil, nil, err
 	}
 	// ピンポイントのスポットがない場合
-	if spot == nil {
+	if spots == nil {
 		return user, nil, nil, nil
 	}
 
 	// 屋内推定をしたユーザのピンポイントのスポットIDを取得
-	spotId := spot.GetId()
+	spotIds := spots.GetSpotIds()
 
 	// ピンポイントのスポットを元にスポットに紐づくオブジェクトを取得
-	spotObject, err := goss.objectRepo.FindForSpotId(
-		spotId,
+	spotObjects, err := goss.objectRepo.FindForSpotIds(
+		spotIds,
 		user,
 		application,
 	)
@@ -97,11 +96,11 @@ func (goss *GetObjectBySpotService) Run(
 		return user, nil, nil, err
 	}
 	// ピンポイントのスポットに紐づくオブジェクトがない場合
-	if spotObject == nil {
+	if spotObjects == nil {
 		return user, nil, nil, nil
 	}
 
-	spotObject.LinkSpot(spot)
+	spotObjects.LinkSpots(spots)
 
-	return user, spotObject, areaObject, nil
+	return user, spotObjects, areaObject, nil
 }

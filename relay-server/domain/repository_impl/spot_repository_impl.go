@@ -10,7 +10,7 @@ type SpotRepositoryImpl interface {
 		spotIds []string,
 		rawDataFile []byte,
 		a *application_models_domain.Application,
-	) (*spot_models_domain.Spot, error)
+	) (*spot_models_domain.SpotCollection, error)
 
 	FindForCoordinateAndRadius(
 		radius int,
