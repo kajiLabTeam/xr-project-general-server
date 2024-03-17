@@ -5,6 +5,7 @@ import { DBConnection, MinioConnection } from '../../infrastructure/connection';
 import { UserId } from '../../domain/model/user/userId';
 import { ObjectBrowsingLogRepositoryImpl } from '../../domain/repository_impl/objectBrowsingLogIdRepositoryImpl';
 import { ObjectBrowsingLogAggregate } from '../../domain/model/objectBrowsingLog/aggregate';
+import { ApplicationAggregate } from '../../domain/model/applicaation/aggregate';
 
 export class GetObjectBySpotIdService {
   constructor(
@@ -15,6 +16,7 @@ export class GetObjectBySpotIdService {
   async run(
     userId: UserId,
     spotId: SpotId,
+    application: ApplicationAggregate,
   ): Promise<ObjectAggregate | undefined> {
     // MinioとDBに接続する
     const s3 = await MinioConnection.connect();
@@ -25,7 +27,9 @@ export class GetObjectBySpotIdService {
       s3,
       conn,
       spotId,
+      application,
     );
+    console.log(objectRepositoryResult?.getSignedUrlOfPrivateValue());
     if (!objectRepositoryResult) {
       return undefined;
     }

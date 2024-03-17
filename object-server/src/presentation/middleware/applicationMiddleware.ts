@@ -1,4 +1,4 @@
-export const getCredential = (authorization: string): string => {
+export const getCredential = (authorization: string): [string, string] => {
   const authParts = authorization.split(' ');
 
   if (authParts.length !== 2 || authParts[0].toLowerCase() !== 'basic') {
@@ -14,5 +14,5 @@ export const getCredential = (authorization: string): string => {
 
   const [appId, secretKey] = credentials;
 
-  return appId;
+  return [appId, secretKey];
 };

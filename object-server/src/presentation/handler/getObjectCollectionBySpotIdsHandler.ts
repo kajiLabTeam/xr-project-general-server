@@ -1,13 +1,13 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, application } from 'express';
 
 import { ObjectAggregate } from '../../domain/model/object/aggregate';
 import { UserAggregate } from '../../domain/model/user/aggregate';
 import { GetObjectCollectionBySpotIdService } from '../../application/service/getObjectCollectionBySpotIdsService';
 import { ObjectBrowsingLogRepository } from '../../infrastructure/repository/objectBrowsingLogRepository';
 import { ObjectCollectionRepository } from '../../infrastructure/repository/objectCollectionRepository';
-import { Application } from '../../utils/globalVariable';
 import { getCredential } from '../middleware/applicationMiddleware';
 import { ErrorResponse } from '../error/error_presentation';
+import { ApplicationAggregate } from '../../domain/model/applicaation/aggregate';
 
 export const GetObjectCollectionBySpotIdRouter = express.Router();
 
@@ -46,8 +46,8 @@ GetObjectCollectionBySpotIdRouter.post(
       return;
     }
 
-    const applicationId = getCredential(authorization);
-    Application.id = applicationId;
+    const [applicationId, secretKey] = getCredential(authorization);
+    const application = new ApplicationAggregate(applicationId, secretKey);
 
     const requestBody: GetObjectCollectionBySpotIdRequest = req.body;
 
@@ -65,7 +65,11 @@ GetObjectCollectionBySpotIdRouter.post(
 
     try {
       const getObjectCollectionBySpotIdResult =
-        await getObjectCollectionBySpotIdService.run(userId, spotIds);
+        await getObjectCollectionBySpotIdService.run(
+          userId,
+          spotIds,
+          application,
+        );
       if (getObjectCollectionBySpotIdResult === undefined) {
         res.status(404).json({ error: 'Object Not Found' });
         return;

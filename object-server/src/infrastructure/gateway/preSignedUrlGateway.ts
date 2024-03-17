@@ -1,4 +1,5 @@
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import application from 'express';
 import {
   GetObjectCommand,
   PutObjectCommand,
@@ -14,15 +15,15 @@ import {
   UploadPresignedUrlRecord,
   ViewPreSignedUrlRecord,
 } from '../record/preSignedUrlRecord';
-import { Application } from '../../utils/globalVariable';
 
 export class PreSignedUrlGateway {
   async publishUploadPresignedUrl(
     s3: S3Client,
     key: string,
+    applicationId: string,
   ): Promise<UploadPresignedUrlRecord> {
     try {
-      const objectKey = `${Application.id}/${OBJECTS_BUCKET_NAME}/${key}`;
+      const objectKey = `${applicationId}/${OBJECTS_BUCKET_NAME}/${key}`;
       const url = await getSignedUrl(
         s3,
         new PutObjectCommand({
@@ -41,9 +42,10 @@ export class PreSignedUrlGateway {
   async publishViewPresignedUrl(
     s3: S3Client,
     key: string,
+    applicationId: string,
   ): Promise<ViewPreSignedUrlRecord | undefined> {
     try {
-      const objectKey = `${Application.id}/${OBJECTS_BUCKET_NAME}/${key}`;
+      const objectKey = `${applicationId}/${OBJECTS_BUCKET_NAME}/${key}`;
       const url = await getSignedUrl(
         s3,
         new GetObjectCommand({
@@ -55,6 +57,7 @@ export class PreSignedUrlGateway {
 
       // オブジェクトが存在しない場合はundefinedを返す
       const response = await fetch(url);
+      console.log(response.status);
       if (response.status === 404) {
         return undefined;
       }

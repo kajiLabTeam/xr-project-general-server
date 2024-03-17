@@ -1,10 +1,9 @@
-import { ObjectAggregate } from '../../domain/model/object/aggregate';
+import { ApplicationAggregate } from '../../domain/model/applicaation/aggregate';
 import { SpotId } from '../../domain/model/object/spotId';
 import { ObjectCollectionAggregate } from '../../domain/model/objectCollection/aggregate';
 import { UserId } from '../../domain/model/user/userId';
 import { ObjectBrowsingLogRepositoryImpl } from '../../domain/repository_impl/objectBrowsingLogIdRepositoryImpl';
 import { ObjectCollectionRepositoryImpl } from '../../domain/repository_impl/objectCollectionRepositoryImpl';
-import { ObjectRepositoryImpl } from '../../domain/repository_impl/objectRepositoryImpl';
 import { DBConnection, MinioConnection } from '../../infrastructure/connection';
 
 export class GetObjectCollectionBySpotIdService {
@@ -16,6 +15,7 @@ export class GetObjectCollectionBySpotIdService {
   async run(
     userId: UserId,
     spotIds: SpotId[],
+    application: ApplicationAggregate,
   ): Promise<ObjectCollectionAggregate | undefined> {
     // MinioとDBに接続する
     const s3 = await MinioConnection.connect();
@@ -26,6 +26,7 @@ export class GetObjectCollectionBySpotIdService {
       s3,
       conn,
       spotIds,
+      application,
     );
     if (objectCollection === undefined) {
       return undefined;

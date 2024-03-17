@@ -6,8 +6,9 @@ import { GetObjectBySpotIdService } from '../../application/service/getObjectByS
 import { ObjectRepository } from '../../infrastructure/repository/objectRepository';
 import { ObjectBrowsingLogRepository } from '../../infrastructure/repository/objectBrowsingLogRepository';
 import { getCredential } from '../middleware/applicationMiddleware';
-import { Application } from '../../utils/globalVariable';
 import { ErrorResponse } from '../error/error_presentation';
+import application from 'express';
+import { ApplicationAggregate } from '../../domain/model/applicaation/aggregate';
 
 export const GetObjectBySpotIdRouter = express.Router();
 
@@ -40,8 +41,8 @@ GetObjectBySpotIdRouter.post(
       return;
     }
 
-    const applicationId = getCredential(authorization);
-    Application.id = applicationId;
+    const [applicationId, secretKey] = getCredential(authorization);
+    const application = new ApplicationAggregate(applicationId, secretKey);
 
     const requestBody: GetObjectBySpotIdRequest = req.body;
 
@@ -54,6 +55,7 @@ GetObjectBySpotIdRouter.post(
       const getObjectBySpotIdResult = await getObjectBySpotIdService.run(
         userAggregate.getIdOfPrivateValue(),
         spotId,
+        application,
       );
       if (getObjectBySpotIdResult === undefined) {
         res.status(404).send({ error: 'Spot Not Found' });

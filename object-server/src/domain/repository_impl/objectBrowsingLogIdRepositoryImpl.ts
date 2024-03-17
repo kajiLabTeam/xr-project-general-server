@@ -6,5 +6,4 @@ export interface ObjectBrowsingLogRepositoryImpl {
     conn: Pool,
     objectBrowsingLog: ObjectBrowsingLogAggregate,
   ): Promise<void>;
-  // saveAll(objectCollection: ObjectCollectionAggregate): void;
 }

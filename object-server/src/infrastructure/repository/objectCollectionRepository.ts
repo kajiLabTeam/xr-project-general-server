@@ -9,6 +9,8 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { ObjectAggregate } from '../../domain/model/object/aggregate';
 import { UserAggregate } from '../../domain/model/user/aggregate';
 import { InfrastructureError } from '../error/infrastructureError';
+import application from 'express';
+import { ApplicationAggregate } from '../../domain/model/applicaation/aggregate';
 
 const objectGateway = new ObjectGateway();
 const preSignedUrlGateway = new PreSignedUrlGateway();
@@ -20,6 +22,7 @@ export class ObjectCollectionRepository
     s3: S3Client,
     conn: Pool,
     spotIds: SpotId[],
+    application: ApplicationAggregate,
   ): Promise<ObjectCollectionAggregate | undefined> {
     const objectCollectionRecord = await objectGateway.findByIds(
       conn,
@@ -40,7 +43,11 @@ export class ObjectCollectionRepository
       const fileName = `${objectRecordId}.${objectRecordExtension}`;
 
       const objectViewUrlRecord =
-        await preSignedUrlGateway.publishViewPresignedUrl(s3, fileName);
+        await preSignedUrlGateway.publishViewPresignedUrl(
+          s3,
+          fileName,
+          application.getApplicationIdOfPrivateValue(),
+        );
 
       if (!objectViewUrlRecord) {
         return undefined;

@@ -1,3 +1,4 @@
+import { ApplicationAggregate } from '../../domain/model/applicaation/aggregate';
 import { ObjectAggregate } from '../../domain/model/object/aggregate';
 import { Extension } from '../../domain/model/object/extension';
 import { SpotId } from '../../domain/model/object/spotId';
@@ -12,6 +13,7 @@ export class CreateObjectService {
     user: UserAggregate,
     spotId: SpotId,
     extension: Extension,
+    application: ApplicationAggregate,
   ): Promise<ObjectAggregate | undefined> {
     // MinioとDBに接続する
     const s3 = await MinioConnection.connect();
@@ -25,6 +27,7 @@ export class CreateObjectService {
       s3,
       conn,
       object,
+      application,
     );
     // オブジェクトが保存できなかった場合
     if (!objectRepositoryResult) {

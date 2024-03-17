@@ -4,8 +4,8 @@ import { UserAggregate } from '../../domain/model/user/aggregate';
 import { CreateObjectService } from '../../application/service/createObjectService';
 import { ObjectRepository } from '../../infrastructure/repository/objectRepository';
 import { getCredential } from '../middleware/applicationMiddleware';
-import { Application } from '../../utils/globalVariable';
 import { ErrorResponse } from '../error/error_presentation';
+import { ApplicationAggregate } from '../../domain/model/applicaation/aggregate';
 
 export const createObjectRouter = express.Router();
 
@@ -37,8 +37,8 @@ createObjectRouter.post(
       return;
     }
 
-    const applicationId = getCredential(authorization);
-    Application.id = applicationId;
+    const [applicationId, secretKey] = getCredential(authorization);
+    const application = new ApplicationAggregate(applicationId, secretKey);
 
     const requestBody: CreateObjectRequest = req.body;
 
@@ -53,6 +53,7 @@ createObjectRouter.post(
         userAggregate,
         spotId,
         extension,
+        application,
       );
 
       if (createObjectResult === undefined) {
