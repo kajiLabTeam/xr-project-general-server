@@ -41,7 +41,7 @@ type PostCreateObjectResponse struct {
 }
 
 func CreateObjectHandler(r *gin.Engine) {
-	r.POST("api/objects/upload", func(c *gin.Context) {
+	r.POST("api/objects/upload", middleware.AuthMiddleware(), func(c *gin.Context) {
 		var req CreateObjectRequest
 
 		spotFactory := spot_models_domain.SpotFactory{}

@@ -10,6 +10,7 @@ import (
 	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/repository"
 	common_handler "github.com/kajiLabTeam/xr-project-relay-server/presentation/handlers/common"
+	"github.com/kajiLabTeam/xr-project-relay-server/presentation/middleware"
 )
 
 type GetObjectByAreaRequest struct {
@@ -24,7 +25,7 @@ type GetObjectByAreaResponse struct {
 }
 
 func GetObjectByAreaHandler(r *gin.Engine) {
-	r.POST("api/objects/search/area", func(c *gin.Context) {
+	r.POST("api/objects/search/area", middleware.AuthMiddleware(), func(c *gin.Context) {
 		var req GetObjectByAreaRequest
 
 		viewObjectCollectionFactory := common_handler.ViewObjectCollectionFactory{}

@@ -27,7 +27,7 @@ type GetObjectBySpotResponse struct {
 }
 
 func GetObjectBySpotHandler(r *gin.Engine) {
-	r.POST("api/objects/search/spot", func(c *gin.Context) {
+	r.POST("api/objects/search/spot", middleware.AuthMiddleware(), func(c *gin.Context) {
 		var req GetObjectBySpotRequest
 
 		viewObjectCollectionFactory := common_handler.ViewObjectCollectionFactory{}
