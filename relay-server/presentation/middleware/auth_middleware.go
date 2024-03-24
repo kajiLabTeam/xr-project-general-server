@@ -20,6 +20,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		request, err := http.NewRequest("GET", endpoint, nil)
 		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 			c.Abort()
 		}
 
@@ -30,7 +31,8 @@ func AuthMiddleware() gin.HandlerFunc {
 		if err != nil {
 			c.Abort()
 		}
-		if response.StatusCode != http.StatusOK {
+		if response.StatusCode == http.StatusUnauthorized {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
 		}
 

@@ -1,10 +1,8 @@
-package external_services
+package config
 
 import (
 	"database/sql"
 	"fmt"
-
-	"github.com/kajiLabTeam/xr-project-application-authentication-server/config"
 
 	_ "github.com/lib/pq"
 )
@@ -12,7 +10,7 @@ import (
 type DBConnection struct{}
 
 func (dbc *DBConnection) Connect() (*sql.DB, error) {
-	env := config.NewPostgresEnv()
+	env := NewPostgresEnv()
 
 	connectionString := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",

@@ -7,15 +7,18 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		panic(err)
 	}
 
 	r := gin.Default()
 
+	handlers.AuthUserHandler(r)
+	handlers.CreateUserHandler(r)
+
 	handlers.AuthApplicationHandler(r)
 	handlers.RegisterApplicationHandler(r)
 
-	r.Run()
+	r.Run(":8003")
 }

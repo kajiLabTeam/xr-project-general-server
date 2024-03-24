@@ -1,4 +1,4 @@
-package databases
+package models
 
 import (
 	"database/sql"
@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/kajiLabTeam/xr-project-application-authentication-server/utils"
-	"github.com/lib/pq"
 )
 
 type Representative struct {
@@ -117,14 +116,27 @@ func (r *Representative) Insert(db *sql.DB) (*Representative, error) {
 	var insertedPhoneNumber string
 	var insertedAddress string
 	var createdAt time.Time
-	var updatedAt pq.NullTime
-	var deletedAt pq.NullTime
 	var applicationID string
 
 	err := db.QueryRow(
-		"INSERT INTO representatives (id, name, corporate_name, mail, phone_number, address, application_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, corporate_name, mail, phone_number, address, created_at, updated_at, deleted_at, application_id",
-		r.id, r.name, r.corporateName, r.mail, r.phoneNumber, r.address, r.applicationId,
-	).Scan(&insertedID, &insertedName, &insertedCorporateName, &insertedMail, &insertedPhoneNumber, &insertedAddress, &createdAt, &updatedAt, &deletedAt, &applicationID)
+		"INSERT INTO representatives (id, name, corporate_name, mail, phone_number, address, application_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, corporate_name, mail, phone_number, address, created_at, application_id",
+		r.id,
+		r.name,
+		r.corporateName,
+		r.mail,
+		r.phoneNumber,
+		r.address,
+		r.applicationId,
+	).Scan(
+		&insertedID,
+		&insertedName,
+		&insertedCorporateName,
+		&insertedMail,
+		&insertedPhoneNumber,
+		&insertedAddress,
+		&createdAt,
+		&applicationID,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -137,8 +149,8 @@ func (r *Representative) Insert(db *sql.DB) (*Representative, error) {
 		phoneNumber:   insertedPhoneNumber,
 		address:       insertedAddress,
 		createdAt:     &createdAt,
-		updatedAt:     &updatedAt.Time,
-		deleteAt:      &deletedAt.Time,
+		updatedAt:     nil,
+		deleteAt:      nil,
 		applicationId: &applicationID,
 	}, nil
 }
