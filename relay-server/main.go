@@ -19,5 +19,5 @@ func main() {
 	handlers.GetObjectByAreaHandler(r)
 	handlers.CreateObjectHandler(r)
 
-	r.Run(":8000")
+	r.Run()
 }

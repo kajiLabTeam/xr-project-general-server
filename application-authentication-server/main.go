@@ -20,5 +20,5 @@ func main() {
 	handlers.AuthApplicationHandler(r)
 	handlers.RegisterApplicationHandler(r)
 
-	r.Run(":8003")
+	r.Run()
 }
