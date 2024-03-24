@@ -15,13 +15,16 @@ func AuthApplicationMiddleware() gin.HandlerFunc {
 
 		authParts := strings.Fields(headerValue)
 		if len(authParts) != 2 || authParts[0] != "Basic" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
+			return
 		}
 
 		request, err := http.NewRequest("GET", endpoint, nil)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 			c.Abort()
+			return
 		}
 
 		request.Header.Set("Authorization", headerValue)
@@ -29,11 +32,14 @@ func AuthApplicationMiddleware() gin.HandlerFunc {
 		client := &http.Client{}
 		response, err := client.Do(request)
 		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
 			c.Abort()
+			return
 		}
 		if response.StatusCode == http.StatusUnauthorized {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
+			return
 		}
 
 		c.Next()

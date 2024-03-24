@@ -185,7 +185,6 @@ func FindUserById(db *sql.DB, id string) (*User, error) {
 		&user.id,
 	)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 

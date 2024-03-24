@@ -19,7 +19,7 @@ type CreateUserRequest struct {
 	Occupation string  `json:"occupation"`
 	Address    string  `json:"address"`
 }
-
+	
 type CreateUserResponse struct {
 	Id         string  `json:"id"`
 	Name       string  `json:"name"`
