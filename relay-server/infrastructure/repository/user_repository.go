@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
 	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/domain/repository_impl"
@@ -53,6 +55,8 @@ func (ur *UserRepository) Save(
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(resUser)
 
 	return resUser, nil
 }

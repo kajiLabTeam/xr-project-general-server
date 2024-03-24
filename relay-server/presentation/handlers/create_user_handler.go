@@ -80,6 +80,7 @@ func CreateUserHandler(r *gin.Engine) {
 			Id:         resUser.GetId(),
 			Name:       resUser.GetName(),
 			Email:      resUser.GetMail(),
+			Gender:     resUser.GetGender(),
 			Age:        resUser.GetAge(),
 			Height:     resUser.GetHeight(),
 			Weight:     resUser.GetWeight(),
