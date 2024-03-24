@@ -4,7 +4,6 @@ import (
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
 	object_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/object"
 	object_collection_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/object_collection"
-	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/domain/repository_impl"
 	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/gateway"
 	object_record "github.com/kajiLabTeam/xr-project-relay-server/infrastructure/record/object"
@@ -20,11 +19,11 @@ func NewObjectRepository() repository_impl.ObjectRepositoryImpl {
 
 func (or *ObjectRepository) FindForSpotId(
 	spotId string,
-	u *user_models_domain.User,
+	userId string,
 	a *application_models_domain.Application,
 ) (*object_models_domain.Object, error) {
 	FindForSpotIdRequest := object_record.FindForSpotIdRequest{
-		UserId: u.GetId(),
+		UserId: userId,
 		SpotId: spotId,
 	}
 
@@ -54,13 +53,13 @@ func (or *ObjectRepository) FindForSpotId(
 }
 
 func (or *ObjectRepository) FindForSpotIds(
+	userId string,
 	spotIds []string,
-	u *user_models_domain.User,
 	a *application_models_domain.Application,
 ) (*object_collection_models_domain.ObjectCollection, error) {
 	findForObjectBySpotIAndRawDataFiledResFactory := object_record.FindForObjectBySpotIAndRawDataFiledResponseFactory{}
 	findForSpotIdAndRawDataRequest := object_record.FindForSpotIdsRequest{
-		UserId:  u.GetId(),
+		UserId:  userId,
 		SpotIds: spotIds,
 	}
 
@@ -89,12 +88,12 @@ func (or *ObjectRepository) FindForSpotIds(
 
 func (or *ObjectRepository) Save(
 	spotId string,
-	u *user_models_domain.User,
+	userId string,
 	o *object_models_domain.Object,
 	a *application_models_domain.Application,
 ) (*object_models_domain.Object, error) {
 	createObjectRequest := object_record.SaveRequest{
-		UserId:    u.GetId(),
+		UserId:    userId,
 		SpotId:    spotId,
 		Extension: o.GetExtension(),
 	}

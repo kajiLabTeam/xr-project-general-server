@@ -9,7 +9,6 @@ import (
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
 	object_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/object"
 	spot_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/spot"
-	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/repository"
 	"github.com/kajiLabTeam/xr-project-relay-server/presentation/middleware"
 )
@@ -41,7 +40,7 @@ type PostCreateObjectResponse struct {
 }
 
 func CreateObjectHandler(r *gin.Engine) {
-	r.POST("api/objects/upload", middleware.AuthMiddleware(), func(c *gin.Context) {
+	r.POST("api/objects/upload", middleware.AuthApplicationMiddleware(), func(c *gin.Context) {
 		var req CreateObjectRequest
 
 		spotFactory := spot_models_domain.SpotFactory{}
@@ -65,14 +64,16 @@ func CreateObjectHandler(r *gin.Engine) {
 			return
 		}
 
-		// ファイルを []byte に変換
-		rawDataFile, err := middleware.GetBytesFromMultiPartFile(req.RawDataFile)
+		// INFO : 認証サーバーにユーザー認証をリクエスト
+		// ユーザIDをパスらメータにして認証サーバーにリクエストするべきだった
+		err = middleware.AuthUserMiddleware(header, req.UserId)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			return
 		}
 
-		user, err := user_models_domain.NewUser(req.UserId)
+		// ファイルを []byte に変換
+		rawDataFile, err := middleware.GetBytesFromMultiPartFile(req.RawDataFile)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -98,7 +99,7 @@ func CreateObjectHandler(r *gin.Engine) {
 		}
 
 		// サービスを実行
-		resObject, err := createObjectService.Run(user, spot, object, application)
+		resObject, err := createObjectService.Run(req.UserId, spot, object, application)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return

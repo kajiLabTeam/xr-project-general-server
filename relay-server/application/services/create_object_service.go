@@ -4,7 +4,6 @@ import (
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
 	object_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/object"
 	spot_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/spot"
-	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/domain/repository_impl"
 )
 
@@ -24,7 +23,7 @@ func NewCreateObjectService(
 }
 
 func (cos *CreateObjectService) Run(
-	user *user_models_domain.User,
+	userId string,
 	spot *spot_models_domain.Spot,
 	object *object_models_domain.Object,
 	application *application_models_domain.Application,
@@ -41,7 +40,7 @@ func (cos *CreateObjectService) Run(
 	// オブジェクトをDBに登録
 	object, err = cos.objectRepo.Save(
 		spotId,
-		user,
+		userId,
 		object,
 		application,
 	)

@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	service "github.com/kajiLabTeam/xr-project-relay-server/application/services"
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
-	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/repository"
 	common_handler "github.com/kajiLabTeam/xr-project-relay-server/presentation/handlers/common"
 	"github.com/kajiLabTeam/xr-project-relay-server/presentation/middleware"
@@ -27,7 +26,7 @@ type GetObjectBySpotResponse struct {
 }
 
 func GetObjectBySpotHandler(r *gin.Engine) {
-	r.POST("api/objects/search/spot", middleware.AuthMiddleware(), func(c *gin.Context) {
+	r.POST("api/objects/search/spot", middleware.AuthApplicationMiddleware(), func(c *gin.Context) {
 		var req GetObjectBySpotRequest
 
 		viewObjectCollectionFactory := common_handler.ViewObjectCollectionFactory{}
@@ -50,6 +49,14 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 			return
 		}
 
+		// INFO : 認証サーバーにユーザー認証をリクエスト
+		// ユーザIDをパスらメータにして認証サーバーにリクエストするべきだった
+		err = middleware.AuthUserMiddleware(header, req.UserId)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			return
+		}
+
 		// ファイルを []byte に変換
 		rawDataFile, err := middleware.GetBytesFromMultiPartFile(req.RawDataFile)
 		if err != nil {
@@ -57,18 +64,12 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 			return
 		}
 
-		user, err := user_models_domain.NewUser(req.UserId)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
 		// サービスを実行
-		resUser, resSpotObjectCollection, resAreaObjectCollection, err := getObjectBySpotService.Run(
+		resUserId, resSpotObjectCollection, resAreaObjectCollection, err := getObjectBySpotService.Run(
+			req.UserId,
 			req.Latitude,
 			req.Longitude,
 			rawDataFile,
-			user,
 			application,
 		)
 		if err != nil {
@@ -78,7 +79,7 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 
 		if resSpotObjectCollection == nil && resAreaObjectCollection == nil {
 			res := GetObjectBySpotResponse{
-				UserId:      resUser.GetId(),
+				UserId:      *resUserId,
 				SpotObjects: []common_handler.ViewObject{},
 				AreaObjects: []common_handler.ViewObject{},
 			}
@@ -88,7 +89,7 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 
 		// レスポンスを生成
 		res := GetObjectBySpotResponse{
-			UserId: resUser.GetId(),
+			UserId: *resUserId,
 			SpotObjects: viewObjectCollectionFactory.FromViewObjectCollection(
 				resSpotObjectCollection,
 			),

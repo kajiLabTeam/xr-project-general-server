@@ -4,7 +4,6 @@ import (
 	"github.com/kajiLabTeam/xr-project-relay-server/config"
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
 	object_collection_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/object_collection"
-	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/domain/repository_impl"
 )
 
@@ -24,13 +23,13 @@ func NewGetObjectBySpotService(
 }
 
 func (goss *GetObjectBySpotService) Run(
+	userId string,
 	latitude float64,
 	longitude float64,
 	rawDataFile []byte,
-	user *user_models_domain.User,
 	application *application_models_domain.Application,
 ) (
-	*user_models_domain.User,
+	*string,
 	*object_collection_models_domain.ObjectCollection,
 	*object_collection_models_domain.ObjectCollection,
 	error,
@@ -43,11 +42,11 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return user, nil, nil, err
+		return nil, nil, nil, err
 	}
 	// 周辺スポットがない場合
 	if areaSpotCollection == nil {
-		return user, nil, nil, nil
+		return nil, nil, nil, nil
 	}
 
 	// 周辺スポットのIDを取得
@@ -55,16 +54,16 @@ func (goss *GetObjectBySpotService) Run(
 
 	// 周辺スポットを元にスポットに紐づくオブジェクトを取得
 	areaObject, err := goss.objectRepo.FindForSpotIds(
+		userId,
 		areaSpotIds,
-		user,
 		application,
 	)
 	if err != nil {
-		return user, nil, nil, err
+		return nil, nil, nil, err
 	}
 	// 周辺スポットに紐づくオブジェクトがない場合
 	if areaObject == nil {
-		return user, nil, nil, nil
+		return nil, nil, nil, nil
 	}
 
 	areaObject.LinkSpots(areaSpotCollection)
@@ -76,11 +75,11 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return user, nil, nil, err
+		return nil, nil, nil, err
 	}
 	// ピンポイントのスポットがない場合
 	if spots == nil {
-		return user, nil, nil, nil
+		return nil, nil, nil, nil
 	}
 
 	// 屋内推定をしたユーザのピンポイントのスポットIDを取得
@@ -88,19 +87,19 @@ func (goss *GetObjectBySpotService) Run(
 
 	// ピンポイントのスポットを元にスポットに紐づくオブジェクトを取得
 	spotObjects, err := goss.objectRepo.FindForSpotIds(
+		userId,
 		spotIds,
-		user,
 		application,
 	)
 	if err != nil {
-		return user, nil, nil, err
+		return nil, nil, nil, err
 	}
 	// ピンポイントのスポットに紐づくオブジェクトがない場合
 	if spotObjects == nil {
-		return user, nil, nil, nil
+		return nil, nil, nil, nil
 	}
 
 	spotObjects.LinkSpots(spots)
 
-	return user, spotObjects, areaObject, nil
+	return &userId, spotObjects, areaObject, nil
 }

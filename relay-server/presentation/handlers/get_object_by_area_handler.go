@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kajiLabTeam/xr-project-relay-server/application/services"
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
-	user_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/user"
 	"github.com/kajiLabTeam/xr-project-relay-server/infrastructure/repository"
 	common_handler "github.com/kajiLabTeam/xr-project-relay-server/presentation/handlers/common"
 	"github.com/kajiLabTeam/xr-project-relay-server/presentation/middleware"
@@ -25,7 +24,7 @@ type GetObjectByAreaResponse struct {
 }
 
 func GetObjectByAreaHandler(r *gin.Engine) {
-	r.POST("api/objects/search/area", middleware.AuthMiddleware(), func(c *gin.Context) {
+	r.POST("api/objects/search/area", middleware.AuthApplicationMiddleware(), func(c *gin.Context) {
 		var req GetObjectByAreaRequest
 
 		viewObjectCollectionFactory := common_handler.ViewObjectCollectionFactory{}
@@ -48,33 +47,36 @@ func GetObjectByAreaHandler(r *gin.Engine) {
 			return
 		}
 
+		// INFO : 認証サーバーにユーザー認証をリクエスト
+		// ユーザIDをパスらメータにして認証サーバーにリクエストするべきだった
+		err = middleware.AuthUserMiddleware(header, req.UserId)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			return
+		}
+
 		// クエリパラメータの取得
 		area, err := strconv.Atoi(c.Query("radius"))
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		user, err := user_models_domain.NewUser(req.UserId)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
 
 		// サービスを実行
-		user, objectCollection, err := getObjectByAreaService.Run(
+		resUserId, resObjectCollection, err := getObjectByAreaService.Run(
 			area,
+			req.UserId,
 			req.Latitude,
 			req.Longitude,
-			user,
 			application,
 		)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		if objectCollection == nil {
+		if resObjectCollection == nil {
 			res := GetObjectByAreaResponse{
-				UserId:  user.GetId(),
+				UserId:  *resUserId,
 				Objects: []common_handler.ViewObject{},
 			}
 
@@ -82,8 +84,8 @@ func GetObjectByAreaHandler(r *gin.Engine) {
 		}
 
 		res := GetObjectByAreaResponse{
-			UserId:  user.GetId(),
-			Objects: viewObjectCollectionFactory.FromViewObjectCollection(objectCollection),
+			UserId:  *resUserId,
+			Objects: viewObjectCollectionFactory.FromViewObjectCollection(resObjectCollection),
 		}
 
 		c.JSON(http.StatusOK, res)

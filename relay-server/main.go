@@ -14,9 +14,10 @@ func main() {
 
 	r := gin.Default()
 
+	handlers.CreateUserHandler(r)
 	handlers.GetObjectBySpotHandler(r)
 	handlers.GetObjectByAreaHandler(r)
 	handlers.CreateObjectHandler(r)
 
-	r.Run(":8080")
+	r.Run(":8000")
 }

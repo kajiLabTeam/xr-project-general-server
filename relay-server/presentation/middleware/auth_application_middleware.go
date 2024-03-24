@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthApplicationMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		endpoint := os.Getenv("APPLICATION_AUTHENTICATION_SERVER_URL") + "/api/application/auth"
+		endpoint := os.Getenv("AUTHENTICATION_SERVER_URL") + "/api/application/auth"
 		headerValue := c.GetHeader("Authorization")
 
 		authParts := strings.Fields(headerValue)
