@@ -28,21 +28,28 @@ class CoordinateRecord:
 
 
 class CoordinateCollectionRecord:
-    def __init__(self, coordinates: List[CoordinateRecord]):
-        self.__coordinates = coordinates
+    def __init__(self, coordinate_list: List[CoordinateRecord]):
+        self.__coordinate_list = coordinate_list
 
-    def get_coordinates_of_private_value(self) -> List[CoordinateRecord]:
-        return self.__coordinates
+    def get_coordinate_list_of_private_value(self) -> List[CoordinateRecord]:
+        return self.__coordinate_list
 
     def add_coordinate(self, coordinate: CoordinateRecord):
-        self.__coordinates.append(coordinate)
+        self.__coordinate_list.append(coordinate)
 
     def unique_coordinate(self) -> None:
-        self.__coordinates = list(set(self.__coordinates))
+        """
+        idをキーにして重複を削除する
+        """
+        unique_coordinates_dict = {
+            coordinate.get_id_of_private_value(): coordinate
+            for coordinate in self.__coordinate_list
+        }
+        self.__coordinate_list = list(unique_coordinates_dict.values())
 
     # CoordinateRecordのspot_idを抽出する
     def extract_spot_id(self) -> List[str]:
         return [
             coordinate.get_spot_id_of_private_value()
-            for coordinate in self.__coordinates
+            for coordinate in self.__coordinate_list
         ]

@@ -19,7 +19,7 @@ class GetSpotCollectionByAreaService:
 
         try:
             # エリアを元にリポジトリからスポットを取得
-            spot_collection = self.__spot_collection_repository.find_for_coordinates(
+            spot_collection = self.__spot_collection_repository.find_for_coordinate_list(
                 conn=conn,
                 center_coordinate=area.get_coordinate_of_private_value(),
                 circumferential_coordinate_list=area.get_peripheral_coordinate_of_private_value(),

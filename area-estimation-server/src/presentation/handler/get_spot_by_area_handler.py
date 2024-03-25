@@ -1,13 +1,14 @@
 from typing import List
 
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+
 from application.service.get_spot_by_area_service import \
     GetSpotCollectionByAreaService
 from domain.model.area.aggregate import AreaAggregateFactory
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
 from infrastructure.repository.spot_collection_repository import \
     SpotCollectionRepository
-from pydantic import BaseModel
 
 router = APIRouter()
 

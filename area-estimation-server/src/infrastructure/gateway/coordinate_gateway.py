@@ -1,13 +1,14 @@
 from typing import List, Optional
 
 import psycopg2.sql as sql
+from psycopg2.extensions import connection
+
 from infrastructure.record.coordinate_record import (
     CoordinateCollectionRecord, CoordinateRecord)
-from psycopg2.extensions import connection
 
 
 class CoordinateGateway:
-    def find_for_coordinates(
+    def find_for_coordinate_list(
         self,
         conn: connection,
         center_latitude: float,
@@ -16,7 +17,7 @@ class CoordinateGateway:
         circumferential_longitude_list: List[float],
     ) -> Optional[CoordinateCollectionRecord]:
         with conn.cursor() as cursor:
-            coordinate_record_list = CoordinateCollectionRecord([])
+            coordinate_collection_record = CoordinateCollectionRecord([])
 
             for circumferential_latitude, circumferential_longitude in zip(
                 circumferential_latitude_list, circumferential_longitude_list
@@ -41,10 +42,10 @@ class CoordinateGateway:
 
                 results = cursor.fetchall()
                 if not results:
-                    return None
+                    continue
 
                 for result in results:
-                    coordinate_record_list.add_coordinate(
+                    coordinate_collection_record.add_coordinate(
                         CoordinateRecord(
                             id=result[0],
                             latitude=result[1],
@@ -53,4 +54,13 @@ class CoordinateGateway:
                         )
                     )
 
-            return coordinate_record_list.unique_coordinate()
+        if (
+            len(coordinate_collection_record.get_coordinate_list_of_private_value())
+            == 0
+        ):
+            return None
+
+        # 重複を削除
+        coordinate_collection_record.unique_coordinate()
+
+        return coordinate_collection_record

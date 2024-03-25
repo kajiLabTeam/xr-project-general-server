@@ -14,7 +14,7 @@ class CircumferentialCoordinates:
     ):
         self.peripheral_coordinate: List[Coordinate] = []
         self.add_circumferential_coordinate(center_coordinate)
-        self.generate_coordinates_within_radius(center_coordinate, radius)
+        self.generate_coordinate_list_within_radius(center_coordinate, radius)
 
     def get_peripheral_coordinate_of_private_value(self) -> List[Coordinate]:
         return self.peripheral_coordinate
@@ -55,7 +55,7 @@ class CircumferentialCoordinates:
 
         return lat2, lon2
 
-    def generate_coordinates_within_radius(
+    def generate_coordinate_list_within_radius(
         self, center_coordinate: Coordinate, radius: int
     ):
         """
