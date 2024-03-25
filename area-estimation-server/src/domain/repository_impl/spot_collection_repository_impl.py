@@ -1,9 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
+from psycopg2.extensions import connection
+
 from domain.model.spot.coordinate import Coordinate
 from domain.model.spot_collection.aggregate import SpotCollectionAggregate
-from psycopg2.extensions import connection
 
 
 class SpotCollectionRepositoryImpl(metaclass=ABCMeta):
@@ -11,6 +12,7 @@ class SpotCollectionRepositoryImpl(metaclass=ABCMeta):
     def find_for_coordinates(
         self,
         conn: connection,
-        coordinates: List[Coordinate],
+        center_coordinate: Coordinate,
+        circumferential_coordinate_list: List[Coordinate],
     ) -> SpotCollectionAggregate:
         pass

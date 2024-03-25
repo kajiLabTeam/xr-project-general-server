@@ -1,6 +1,8 @@
+from typing import List
+
 from domain.error.domain_error import DomainError, DomainErrorType
 from domain.model.area.area_id import AreaAggregateId
-from domain.model.area.peripheral_coordinates import PeripheralCoordinates
+from domain.model.area.circumferential_coordinates import CircumferentialCoordinates
 from domain.model.spot.coordinate import Coordinate
 
 
@@ -19,7 +21,7 @@ class AreaAggregate:
         self.__id = AreaAggregateId()
         self.__radius = radius
         self.__center_coordinate = center_coordinate
-        self.__peripheral_coordinate = PeripheralCoordinates(
+        self.__peripheral_coordinate = CircumferentialCoordinates(
             radius=radius,
             center_coordinate=center_coordinate,
         )
@@ -33,12 +35,15 @@ class AreaAggregate:
     def get_coordinate_of_private_value(self) -> Coordinate:
         return self.__center_coordinate
 
-    def get_peripheral_coordinate_of_private_value(self) -> PeripheralCoordinates:
-        return self.__peripheral_coordinate
+    def get_peripheral_coordinate_of_private_value(self) -> List[Coordinate]:
+        return self.__peripheral_coordinate.get_peripheral_coordinate_of_private_value()
 
 
-# ファクトリ:特定の引数を受け取ってドメインオブジェクトを生成するメソッド
 class AreaAggregateFactory:
+    """
+    ファクトリ:特定の引数を受け取ってドメインオブジェクトを生成するメソッド
+    """
+
     @staticmethod
     def create(
         radius: int,

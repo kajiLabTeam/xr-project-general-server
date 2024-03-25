@@ -1,7 +1,8 @@
+from ulid import ULID
+
 from domain.model.spot.coordinate import Coordinate
 from domain.model.spot.location_type import LocationType
 from domain.model.spot.spot_id import SpotAggregateId
-from ulid import ULID
 
 
 class SpotAggregate:
@@ -35,8 +36,11 @@ class SpotAggregate:
         return self.__coordinate
 
 
-# ファクトリ:特定の引数を受け取ってドメインオブジェクトを生成するメソッド
 class SpotAggregateFactory:
+    """
+    ファクトリ:特定の引数を受け取ってドメインオブジェクトを生成するメソッド
+    """
+
     @staticmethod
     def create(
         name: str,

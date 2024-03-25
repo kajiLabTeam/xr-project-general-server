@@ -1,12 +1,14 @@
 from typing import List
 
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+
 from application.service.get_spot_by_area_service import \
     GetSpotCollectionByAreaService
 from domain.model.area.aggregate import AreaAggregateFactory
-from fastapi import APIRouter, HTTPException
 from infrastructure.repository.spot_collection_repository import \
     SpotCollectionRepository
-from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -50,6 +52,12 @@ async def get_spot_by_spot_id_collection(
 
         # サービスを実行
         spot_collection = get_spot_collection_by_area_service.run(area=area)
+
+        if spot_collection is None:
+            return JSONResponse(
+                status_code=404,
+                content={"spots": []},
+            )
 
         # レスポンスボディを作成
         response = GetSpotCollectionByAreaResponse(

@@ -34,6 +34,12 @@ class CoordinateCollectionRecord:
     def get_coordinates_of_private_value(self) -> List[CoordinateRecord]:
         return self.__coordinates
 
+    def add_coordinate(self, coordinate: CoordinateRecord):
+        self.__coordinates.append(coordinate)
+
+    def unique_coordinate(self) -> None:
+        self.__coordinates = list(set(self.__coordinates))
+
     # CoordinateRecordのspot_idを抽出する
     def extract_spot_id(self) -> List[str]:
         return [

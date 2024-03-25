@@ -1,7 +1,8 @@
 from typing import List, Optional
 
-from infrastructure.record.spot_record import SpotCollectionRecord, SpotRecord
 from psycopg2.extensions import connection
+
+from infrastructure.record.spot_record import SpotCollectionRecord, SpotRecord
 
 
 class SpotGateway:
