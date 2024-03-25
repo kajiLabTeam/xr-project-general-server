@@ -28,5 +28,6 @@ RUN python -m pip install psycopg2-binary
 RUN python -m pip install python-multipart
 RUN python -m pip install pandas
 RUN python -m pip install numpy
+RUN python -m pip install scipy
 
 CMD ["python", "src/main.py"]
