@@ -2,7 +2,8 @@ from typing import List
 
 from domain.error.domain_error import DomainError, DomainErrorType
 from domain.model.area.area_id import AreaAggregateId
-from domain.model.area.circumferential_coordinates import CircumferentialCoordinates
+from domain.model.area.circumferential_coordinates import \
+    CircumferentialCoordinates
 from domain.model.spot.coordinate import Coordinate
 
 

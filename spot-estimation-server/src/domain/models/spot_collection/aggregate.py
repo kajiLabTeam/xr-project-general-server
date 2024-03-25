@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from config.const import FP_MODEL_COINCIDENT_RATIO_THRESHOLD
+from config.const import FP_MODEL_LOSS_FUNCTION_VALUE_THRESHOLD
 from domain.error.domain_error import DomainError, DomainErrorType
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.fp_model.aggregate import FpModelAggregate
@@ -71,36 +71,6 @@ class SpotCollectionAggregate:
             ):
                 self.remove_spot_id(spot_id)
 
-    # INFO : 現在使われていません
-    # DBに登録されているFPモデルのうち、最も近しいスポットを一意に特定する
-    def identify_spot_by_fp_model_uniquely(
-        self,
-        s3: Any,
-        conn: connection,
-        application: ApplicationAggregate,
-        current_fp_model: FpModelAggregate,
-        fp_model_repository: FpModelRepositoryImpl,
-    ):
-        max_agreement = 0.0
-        # スポットIDの集約から発信機情報と一致しないスポットIDを削除
-        for spot_id in self.__spot_id_collection:
-            # 人がいる候補となるスポットのFPモデルを取得
-            candidate_fp_model = fp_model_repository.find_for_spot_id(
-                conn=conn,
-                s3=s3,
-                spot_id=spot_id,
-                application=application,
-            )
-
-            agreement_percentage = current_fp_model.calculate_percentage_of_agreement(
-                fp_model=candidate_fp_model
-            )
-
-            if agreement_percentage > max_agreement:
-                max_agreement = agreement_percentage
-            else:
-                self.remove_spot_id(spot_id)
-
     def identify_spot_by_fp_model(
         self,
         s3: Any,
@@ -109,6 +79,9 @@ class SpotCollectionAggregate:
         current_fp_model: FpModelAggregate,
         fp_model_repository: FpModelRepositoryImpl,
     ):
+        """
+        FPモデルを元にスポットを絞り込む
+        """
         # スポットIDの集約から発信機情報と一致しないスポットIDを削除
         for spot_id in self.__spot_id_collection:
             # 人がいる候補となるスポットのFPモデルを取得
@@ -119,13 +92,13 @@ class SpotCollectionAggregate:
                 application=application,
             )
 
-            # FPモデルの一致率を計算
-            agreement_percentage = current_fp_model.calculate_percentage_of_agreement(
+            # 2つのFPモデルの損失関数の値を計算
+            loss_function_value = current_fp_model.calculate_loss_function_value(
                 fp_model=candidate_fp_model
             )
 
             # 一致率が閾値を超えていない場合、スポットIDの集約から削除
-            if agreement_percentage < FP_MODEL_COINCIDENT_RATIO_THRESHOLD:
+            if loss_function_value > FP_MODEL_LOSS_FUNCTION_VALUE_THRESHOLD:
                 self.remove_spot_id(spot_id=spot_id)
 
 
