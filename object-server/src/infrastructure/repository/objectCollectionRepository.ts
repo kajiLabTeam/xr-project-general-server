@@ -50,7 +50,7 @@ export class ObjectCollectionRepository
         );
 
       if (!objectViewUrlRecord) {
-        return undefined;
+        continue;
       } else {
         objectCollectionAggregate.addObject(
           new ObjectAggregate(
