@@ -40,6 +40,9 @@ func (sr *SpotRepository) FindForIdsAndRawDataFile(
 	if err != nil {
 		return nil, err
 	}
+	if resSpotCollection == nil {
+		return nil, nil
+	}
 
 	return resSpotCollection, nil
 }

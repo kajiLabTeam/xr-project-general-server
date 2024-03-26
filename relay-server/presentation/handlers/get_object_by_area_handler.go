@@ -76,7 +76,7 @@ func GetObjectByAreaHandler(r *gin.Engine) {
 		}
 		if resObjectCollection == nil {
 			res := GetObjectByAreaResponse{
-				UserId:  *resUserId,
+				UserId:  "",
 				Objects: []common_handler.ViewObject{},
 			}
 

@@ -76,10 +76,9 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
 		if resSpotObjectCollection == nil && resAreaObjectCollection == nil {
 			res := GetObjectBySpotResponse{
-				UserId:      *resUserId,
+				UserId:      "",
 				SpotObjects: []common_handler.ViewObject{},
 				AreaObjects: []common_handler.ViewObject{},
 			}
