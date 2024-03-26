@@ -78,11 +78,33 @@ func GetObjectBySpotHandler(r *gin.Engine) {
 		}
 		if resSpotObjectCollection == nil && resAreaObjectCollection == nil {
 			res := GetObjectBySpotResponse{
-				UserId:      "",
+				UserId:      *resUserId,
 				SpotObjects: []common_handler.ViewObject{},
 				AreaObjects: []common_handler.ViewObject{},
 			}
 			c.JSON(http.StatusNotFound, res)
+			return
+		}
+		if resSpotObjectCollection == nil {
+			res := GetObjectBySpotResponse{
+				UserId:      *resUserId,
+				SpotObjects: []common_handler.ViewObject{},
+				AreaObjects: viewObjectCollectionFactory.FromViewObjectCollection(
+					resAreaObjectCollection,
+				),
+			}
+			c.JSON(http.StatusOK, res)
+			return
+		}
+		if resAreaObjectCollection == nil {
+			res := GetObjectBySpotResponse{
+				UserId: *resUserId,
+				SpotObjects: viewObjectCollectionFactory.FromViewObjectCollection(
+					resSpotObjectCollection,
+				),
+				AreaObjects: []common_handler.ViewObject{},
+			}
+			c.JSON(http.StatusOK, res)
 			return
 		}
 

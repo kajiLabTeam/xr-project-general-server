@@ -76,11 +76,11 @@ func GetObjectByAreaHandler(r *gin.Engine) {
 		}
 		if resObjectCollection == nil {
 			res := GetObjectByAreaResponse{
-				UserId:  "",
+				UserId:  req.UserId,
 				Objects: []common_handler.ViewObject{},
 			}
-
 			c.JSON(http.StatusNotFound, res)
+			return
 		}
 
 		res := GetObjectByAreaResponse{
