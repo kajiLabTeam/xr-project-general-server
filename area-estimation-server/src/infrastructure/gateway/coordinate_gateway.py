@@ -1,10 +1,9 @@
 from typing import List, Optional
 
 import psycopg2.sql as sql
-from psycopg2.extensions import connection
-
 from infrastructure.record.coordinate_record import (
     CoordinateCollectionRecord, CoordinateRecord)
+from psycopg2.extensions import connection
 
 
 class CoordinateGateway:

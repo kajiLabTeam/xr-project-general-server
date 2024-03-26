@@ -1,10 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from typing import List
 
-from psycopg2.extensions import connection
-
 from domain.model.spot.coordinate import Coordinate
 from domain.model.spot_collection.aggregate import SpotCollectionAggregate
+from psycopg2.extensions import connection
 
 
 class SpotCollectionRepositoryImpl(metaclass=ABCMeta):

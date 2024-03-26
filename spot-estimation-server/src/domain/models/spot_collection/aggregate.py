@@ -13,6 +13,7 @@ from domain.repository_impl.fp_model_repository_impl import \
 from domain.repository_impl.spot_repository_impl import SpotRepositoryImpl
 from domain.repository_impl.transmitter_repository_impl import \
     TransmitterRepositoryImpl
+from infrastructure.error.infrastructure_error import InfrastructureError
 from psycopg2.extensions import connection
 from ulid import ULID
 
@@ -59,17 +60,21 @@ class SpotCollectionAggregate:
     ):
         # スポットIDの集約から発信機情報と一致しないスポットIDを削除
         for spot_id in self.__spot_id_collection:
-            # 人がいる候補となるスポットの発信機情報を取得
-            candidate_transmitter = transmitter_repository.find_for_spot_id(
-                conn=conn,
-                spot_id=spot_id,
-            )
+            try:
+                # 人がいる候補となるスポットの発信機情報を取得
+                candidate_transmitter = transmitter_repository.find_for_spot_id(
+                    conn=conn,
+                    spot_id=spot_id,
+                )
 
-            # 発信機の一致率が閾値を超えていない場合、スポットIDの集約から削除
-            if not candidate_transmitter.is_match_connection(
-                transmitter=connecting_transmitter
-            ):
+                # 発信機の一致率が閾値を超えていない場合、スポットIDの集約から削除
+                if not candidate_transmitter.is_match_connection(
+                    transmitter=connecting_transmitter
+                ):
+                    self.remove_spot_id(spot_id)
+            except InfrastructureError:
                 self.remove_spot_id(spot_id)
+                continue
 
     def identify_spot_by_fp_model(
         self,
@@ -84,22 +89,26 @@ class SpotCollectionAggregate:
         """
         # スポットIDの集約から発信機情報と一致しないスポットIDを削除
         for spot_id in self.__spot_id_collection:
-            # 人がいる候補となるスポットのFPモデルを取得
-            candidate_fp_model = fp_model_repository.find_for_spot_id(
-                conn=conn,
-                s3=s3,
-                spot_id=spot_id,
-                application=application,
-            )
+            try:
+                # 人がいる候補となるスポットのFPモデルを取得
+                candidate_fp_model = fp_model_repository.find_for_spot_id(
+                    conn=conn,
+                    s3=s3,
+                    spot_id=spot_id,
+                    application=application,
+                )
 
-            # 2つのFPモデルの損失関数の値を計算
-            loss_function_value = current_fp_model.calculate_loss_function_value(
-                fp_model=candidate_fp_model
-            )
+                # 2つのFPモデルの損失関数の値を計算
+                loss_function_value = current_fp_model.calculate_loss_function_value(
+                    fp_model=candidate_fp_model
+                )
 
-            # 一致率が閾値を超えていない場合、スポットIDの集約から削除
-            if loss_function_value > FP_MODEL_LOSS_FUNCTION_VALUE_THRESHOLD:
-                self.remove_spot_id(spot_id=spot_id)
+                # 一致率が閾値を超えていない場合、スポットIDの集約から削除
+                if loss_function_value > FP_MODEL_LOSS_FUNCTION_VALUE_THRESHOLD:
+                    self.remove_spot_id(spot_id=spot_id)
+            except InfrastructureError:
+                self.remove_spot_id(spot_id)
+                continue
 
 
 class SpotCollectionAggregateFactory:

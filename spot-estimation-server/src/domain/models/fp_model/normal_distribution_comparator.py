@@ -20,8 +20,10 @@ class NormalDistributionComparator:
         self.__q_mean_list: List[float] = q_df["mean"]  # type: ignore
         self.__q_std_list: List[float] = q_df["std"]  # type: ignore
 
-    # 正規分布の確率密度関数
     def __normal_pdf(self, x: Any, mean: float, std: float) -> Any:
+        """
+        正規分布の確率密度関数
+        """
         result = (
             1
             / (np.sqrt(2 * np.pi * std**2))

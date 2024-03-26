@@ -32,7 +32,7 @@ class RawDataAggregate:
         return self.__raw_data_file
 
     def __generate_csv_bytes(self, data_frame: pd.DataFrame, file_path: str) -> bytes:
-        data_frame.to_csv(file_path)
+        data_frame.to_csv(file_path, index=False)
         with open(file_path, "rb") as file:
             csv_bytes = file.read()
         remove(file_path)
