@@ -66,8 +66,6 @@ func (goss *GetObjectBySpotService) Run(
 		return &userId, nil, nil, nil
 	}
 
-	areaObject.LinkSpots(areaSpotCollection)
-
 	// 周辺スポットをヒントにピンポイントのスポットを取得
 	spots, err := goss.spotRepo.FindForIdsAndRawDataFile(
 		areaSpotIds,
@@ -96,10 +94,15 @@ func (goss *GetObjectBySpotService) Run(
 	}
 	// ピンポイントのスポットに紐づくオブジェクトがない場合
 	if spotObjects == nil {
-		return &userId, nil, nil, nil
+		return &userId, nil, areaObject, nil
 	}
 
+	// areaObjectに存在するspotObjectsとの重複を削除
+	areaObject.RemoveObjectByIds(spotObjects.GetObjectIds())
+
+	// オブジェクト構造体にスポット構造体をリンク
 	spotObjects.LinkSpots(spots)
+	areaObject.LinkSpots(areaSpotCollection)
 
 	return &userId, spotObjects, areaObject, nil
 }

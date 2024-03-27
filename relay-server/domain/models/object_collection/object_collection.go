@@ -19,8 +19,30 @@ func (oc *ObjectCollection) GetObjects() []object_models_domain.Object {
 	return oc.objects
 }
 
+func (oc *ObjectCollection) GetObjectIds() []string {
+	var object_ids []string
+	for _, object := range oc.objects {
+		object_ids = append(object_ids, object.GetId())
+	}
+	return object_ids
+} 
+
 func (oc *ObjectCollection) AddObject(object *object_models_domain.Object) {
 	oc.objects = append(oc.objects, *object)
+}
+
+func (oc *ObjectCollection) RemoveObjectById(object_id string) {
+	for i, object := range oc.objects {
+		if object.GetId() == object_id {
+			oc.objects = append(oc.objects[:i], oc.objects[i+1:]...)
+		}
+	}
+}
+
+func (oc *ObjectCollection) RemoveObjectByIds(object_ids []string) {
+	for _, object_id := range object_ids {
+		oc.RemoveObjectById(object_id)
+	}
 }
 
 func (oc *ObjectCollection) LinkSpots(spot_collection *spot_models_domain.SpotCollection) {
