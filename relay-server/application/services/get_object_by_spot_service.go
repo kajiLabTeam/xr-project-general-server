@@ -59,11 +59,11 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return nil, nil, nil, err
+		return &userId, nil, nil, err
 	}
 	// 周辺スポットに紐づくオブジェクトがない場合
 	if areaObject == nil {
-		return nil, nil, nil, nil
+		return &userId, nil, nil, nil
 	}
 
 	areaObject.LinkSpots(areaSpotCollection)
@@ -75,11 +75,11 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return nil, nil, nil, err
+		return &userId, nil, nil, err
 	}
 	// ピンポイントのスポットがない場合
 	if spots == nil {
-		return nil, nil, nil, nil
+		return &userId, nil, nil, nil
 	}
 
 	// 屋内推定をしたユーザのピンポイントのスポットIDを取得
@@ -92,11 +92,11 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return nil, nil, nil, err
+		return &userId, nil, nil, err
 	}
 	// ピンポイントのスポットに紐づくオブジェクトがない場合
 	if spotObjects == nil {
-		return nil, nil, nil, nil
+		return &userId, nil, nil, nil
 	}
 
 	spotObjects.LinkSpots(spots)

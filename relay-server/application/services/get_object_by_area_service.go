@@ -44,7 +44,7 @@ func (goas *GetObjectByAreaService) Run(
 	}
 	// 周辺スポットがない場合
 	if areaSpotCollection == nil {
-		return nil, nil, nil
+		return &userId, nil, nil
 	}
 
 	// 周辺スポットのIDを取得
@@ -57,11 +57,11 @@ func (goas *GetObjectByAreaService) Run(
 		application,
 	)
 	if err != nil {
-		return nil, nil, err
+		return &userId, nil, err
 	}
 	// 周辺スポットがない場合
 	if areaObject == nil {
-		return nil, nil, nil
+		return &userId, nil, nil
 	}
 
 	areaObject.LinkSpots(areaSpotCollection)
