@@ -1,6 +1,7 @@
 from typing import List
 
-from config.const import TRANSMITTER_COINCIDENT_RATIO_THRESHOLD
+from config.const import (TRANSMITTER_COINCIDENT_RATIO_THRESHOLD,
+                          TRANSMITTER_NUMBER_DIFFERENCE_THRESHOLD)
 from domain.models.raw_data.aggregate import RawDataAggregate
 from domain.models.transmitter.ble import Ble, BleCollection
 from domain.models.transmitter.ble_id import BleId
@@ -39,6 +40,20 @@ class TransmitterAggregate:
         """
         BLEの場合はssid、WIFIの場合はmac_addressの一致率を計測, そして閾値を超えたらTrueを返す
         """
+        # BLEとWiFiの発信機数の差が閾値を超えたらFalseを返す
+        transmitter_number_diff = abs(
+            (
+                len(transmitter.get_ble_collection_of_private_value())
+                + len(transmitter.get_wifi_collection_of_private_value())
+            )
+            - (
+                len(self.__ble_collection.get_ble_list_of_private_value())
+                + len(self.__wifi_collection.get_wifi_list_of_private_value())
+            )
+        )
+        if transmitter_number_diff > TRANSMITTER_NUMBER_DIFFERENCE_THRESHOLD:
+            return False
+
         # BLEのssid一致率を計測
         ble_ssid_match_ratio = self.__ble_collection.measuring_match_rates(
             transmitter.__ble_collection
