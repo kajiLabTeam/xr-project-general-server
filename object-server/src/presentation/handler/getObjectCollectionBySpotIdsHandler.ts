@@ -66,7 +66,6 @@ GetObjectCollectionBySpotIdRouter.post(
           spotIds,
           application,
         );
-      console.log(getObjectCollectionBySpotIdResult);
       if (getObjectCollectionBySpotIdResult === undefined) {
         res.status(404).json({ error: 'Object Not Found' });
         return;
