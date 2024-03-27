@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from domain.models.application.aggregate import ApplicationAggregate
 from domain.models.fp_model.aggregate import FpModelAggregateFactory
@@ -30,7 +30,7 @@ class GetSpotBySpotIdCollectionService:
         raw_data: RawDataAggregate,
         application: ApplicationAggregate,
         spot_collection: SpotCollectionAggregate,
-    ) -> List[SpotAggregate] | None:
+    ) -> Optional[List[SpotAggregate]]:
         conn = DBConnection().connect()
         s3 = MinioConnection().connect()
 
@@ -75,5 +75,8 @@ class GetSpotBySpotIdCollectionService:
             conn=conn,
             spot_repository=self.__spot_repository,
         )
+
+        if len(spot_list) == 0:
+            return None
 
         return spot_list

@@ -45,10 +45,13 @@ class SpotCollectionAggregate:
     ) -> List[SpotAggregate]:
         spot_aggregate_list: List[SpotAggregate] = []
         for spot_id in self.__spot_id_collection:
-            spot_aggregate = spot_repository.find_for_spot_id(
-                conn=conn, spot_id=spot_id
-            )
-            spot_aggregate_list.append(spot_aggregate)
+            try:  # スポットIDが存在しない場合はスキップ
+                spot_aggregate = spot_repository.find_for_spot_id(
+                    conn=conn, spot_id=spot_id
+                )
+                spot_aggregate_list.append(spot_aggregate)
+            except InfrastructureError:
+                continue
         return spot_aggregate_list
 
     # 発信機情報を元にスポットを特定する

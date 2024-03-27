@@ -35,8 +35,10 @@ class TransmitterAggregate:
             for wifi in self.__wifi_collection.get_wifi_list_of_private_value()
         ]
 
-    # TODO: BLEの場合はssid、WIFIの場合はmac_addressの一致率を計測, そして閾値を超えたらTrueを返す
     def is_match_connection(self, transmitter: "TransmitterAggregate") -> bool:
+        """
+        BLEの場合はssid、WIFIの場合はmac_addressの一致率を計測, そして閾値を超えたらTrueを返す
+        """
         # BLEのssid一致率を計測
         ble_ssid_match_ratio = self.__ble_collection.measuring_match_rates(
             transmitter.__ble_collection

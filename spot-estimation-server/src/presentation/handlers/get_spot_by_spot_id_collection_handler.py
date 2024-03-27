@@ -64,13 +64,10 @@ async def get_spot_by_spot_id_collection(
         )
 
         if spot_list is None:
-            JSONResponse(
+            return JSONResponse(
                 status_code=404,
-                content=GetSpotBySpotIdCollectionResponse(
-                    spots=[],
-                ),
+                content={"spots": []},
             )
-            return
 
         return GetSpotBySpotIdCollectionResponse(
             spots=[
