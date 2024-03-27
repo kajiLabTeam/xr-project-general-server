@@ -53,7 +53,7 @@ func (goss *GetObjectBySpotService) Run(
 	areaSpotIds := areaSpotCollection.GetSpotIds()
 
 	// 周辺スポットを元にスポットに紐づくオブジェクトを取得
-	areaObject, err := goss.objectRepo.FindForSpotIds(
+	areaObjects, err := goss.objectRepo.FindForSpotIds(
 		userId,
 		areaSpotIds,
 		application,
@@ -62,9 +62,12 @@ func (goss *GetObjectBySpotService) Run(
 		return &userId, nil, nil, err
 	}
 	// 周辺スポットに紐づくオブジェクトがない場合
-	if areaObject == nil {
+	if areaObjects == nil {
 		return &userId, nil, nil, nil
 	}
+
+	// オブジェクト構造体にスポット構造体をリンク
+	areaObjects.LinkSpots(areaSpotCollection)
 
 	// 周辺スポットをヒントにピンポイントのスポットを取得
 	spots, err := goss.spotRepo.FindForIdsAndRawDataFile(
@@ -77,7 +80,7 @@ func (goss *GetObjectBySpotService) Run(
 	}
 	// ピンポイントのスポットがない場合
 	if spots == nil {
-		return &userId, nil, nil, nil
+		return &userId, nil, areaObjects, nil
 	}
 
 	// 屋内推定をしたユーザのピンポイントのスポットIDを取得
@@ -94,21 +97,19 @@ func (goss *GetObjectBySpotService) Run(
 	}
 	// ピンポイントのスポットに紐づくオブジェクトがない場合
 	if spotObjects == nil {
-		return &userId, nil, areaObject, nil
+		return &userId, nil, areaObjects, nil
 	}
 
-	// areaObjectに存在するspotObjectsとの重複を削除
-	areaObject.RemoveObjectByIds(spotObjects.GetObjectIds())
+	// areaObjectsに存在するspotObjectsとの重複を削除
+	areaObjects.RemoveObjectByIds(spotObjects.GetObjectIds())
 
 	// オブジェクト構造体にスポット構造体をリンク
 	spotObjects.LinkSpots(spots)
 
 	// エリアオブジェクト全てがピンポイントのスポットに紐づく場合
-	if len(areaObject.GetObjects()) == 0 {
+	if len(areaObjects.GetObjects()) == 0 {
 		return &userId, spotObjects, nil, nil
 	}
 
-	areaObject.LinkSpots(areaSpotCollection)
-
-	return &userId, spotObjects, areaObject, nil
+	return &userId, spotObjects, areaObjects, nil
 }
