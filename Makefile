@@ -16,4 +16,4 @@ spot-server:
 	docker exec -it spot-estimation-server bash
 
 object-server:
-	docker-compose exec object-server sh
+	docker compose exec object-server sh

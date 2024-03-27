@@ -51,9 +51,15 @@ GetObjectCollectionBySpotIdRouter.post(
 
     const requestBody: GetObjectCollectionBySpotIdRequest = req.body;
 
-    if (requestBody.spotIds === null || requestBody.spotIds.length === 0) {
+    if (requestBody.spotIds === null) {
       res.status(400).json({ error: 'Invalid Request' });
       return;
+    }
+    if (requestBody.spotIds.length === 0) {
+      const response: GetObjectCollectionBySpotIdResponse = {
+        objects: [],
+      };
+      res.status(404).json(response);
     }
 
     const userId = UserAggregate.userIdFromStr(requestBody.userId);
@@ -67,7 +73,10 @@ GetObjectCollectionBySpotIdRouter.post(
           application,
         );
       if (getObjectCollectionBySpotIdResult === undefined) {
-        res.status(404).json({ error: 'Object Not Found' });
+        const response: GetObjectCollectionBySpotIdResponse = {
+          objects: [],
+        };
+        res.status(404).json(response);
         return;
       }
 
