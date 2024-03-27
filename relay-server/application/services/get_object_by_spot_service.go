@@ -102,6 +102,12 @@ func (goss *GetObjectBySpotService) Run(
 
 	// オブジェクト構造体にスポット構造体をリンク
 	spotObjects.LinkSpots(spots)
+
+	// エリアオブジェクト全てがピンポイントのスポットに紐づく場合
+	if len(areaObject.GetObjects()) == 0 {
+		return &userId, spotObjects, nil, nil
+	}
+
 	areaObject.LinkSpots(areaSpotCollection)
 
 	return &userId, spotObjects, areaObject, nil
