@@ -35,8 +35,11 @@ class SpotCollectionAggregate:
     def add_spot_id(self, spot_id: SpotAggregateId):
         self.__spot_id_collection.append(spot_id)
 
+    # spot_id_collectionからスポットIDを削除
     def remove_spot_id(self, spot_id: SpotAggregateId):
-        self.__spot_id_collection.remove(spot_id)
+        self.__spot_id_collection = [
+            id_ for id_ in self.__spot_id_collection if id_ != spot_id
+        ]
 
     def generate_spot_aggregate_list(
         self,
@@ -105,6 +108,8 @@ class SpotCollectionAggregate:
                 loss_function_value = current_fp_model.calculate_loss_function_value(
                     fp_model=candidate_fp_model
                 )
+
+                print("FPモデルの損失関数の値", loss_function_value)
 
                 # 一致率が閾値を超えていない場合、スポットIDの集約から削除
                 if loss_function_value > FP_MODEL_LOSS_FUNCTION_VALUE_THRESHOLD:

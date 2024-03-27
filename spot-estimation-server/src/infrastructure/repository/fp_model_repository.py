@@ -37,10 +37,17 @@ class FpModelRepository(FpModelRepositoryImpl):
                 + "."
                 + fp_model_record.get_extension_of_private_value()
             )
-            # minioからファイルを取得
-            fp_model = fp_model_gateway.download(
-                s3=s3, key=key, application=application
-            )
+
+            try:
+                # minioからファイルを取得
+                fp_model = fp_model_gateway.download(
+                    s3=s3, key=key, application=application
+                )
+            except InfrastructureError:
+                raise InfrastructureError(
+                    InfrastructureErrorType.FP_MODEL_IS_NOT_FOUND,
+                    "Failed to download fp model",
+                )
 
             return FpModelAggregate(
                 fp_model_file=fp_model,
