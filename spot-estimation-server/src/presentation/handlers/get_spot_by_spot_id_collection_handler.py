@@ -63,8 +63,6 @@ async def get_spot_by_spot_id_collection(
             spot_collection=spot_collection,
         )
 
-        print(spot_list)
-
         if spot_list is None:
             return JSONResponse(
                 status_code=404,

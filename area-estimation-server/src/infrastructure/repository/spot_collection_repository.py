@@ -43,14 +43,12 @@ class SpotCollectionRepository(SpotCollectionRepositoryImpl):
                 circumferential_longitude_list,
             )
         )
-        print(coordinate_collection_select_record)
+
         if coordinate_collection_select_record is None:
             raise InfrastructureError(
                 InfrastructureErrorType.COORDINATE_IS_NOT_FOUND,
                 "coordinate is not found",
             )
-
-        print(coordinate_collection_select_record.extract_spot_id())
 
         # スポットIDリストを元にスポットリストを取得
         spot_collection_select_record = spot_gateway.find_by_spot_ids(
