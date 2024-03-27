@@ -55,8 +55,6 @@ export class PreSignedUrlGateway {
         { expiresIn: VIEW_URL_LIFETIME },
       );
 
-      console.log(url);
-
       // オブジェクトが存在しない場合はundefinedを返す
       const response = await fetch(url);
       if (response.status === 404) {

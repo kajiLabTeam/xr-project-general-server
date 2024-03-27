@@ -28,7 +28,10 @@ export class GetObjectCollectionBySpotIdService {
       spotIds,
       application,
     );
-    if (objectCollection === undefined) {
+    if (
+      objectCollection &&
+      objectCollection.getObjectsOfPrivateValue().length === 0
+    ) {
       return undefined;
     }
 

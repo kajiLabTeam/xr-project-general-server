@@ -52,11 +52,7 @@ GetObjectCollectionBySpotIdRouter.post(
     const requestBody: GetObjectCollectionBySpotIdRequest = req.body;
 
     if (requestBody.spotIds === null || requestBody.spotIds.length === 0) {
-      const response: GetObjectCollectionBySpotIdResponse = {
-        objects: [],
-      };
-
-      res.status(404).json(response);
+      res.status(400).json({ error: 'Invalid Request' });
       return;
     }
 
@@ -70,6 +66,7 @@ GetObjectCollectionBySpotIdRouter.post(
           spotIds,
           application,
         );
+      console.log(getObjectCollectionBySpotIdResult);
       if (getObjectCollectionBySpotIdResult === undefined) {
         res.status(404).json({ error: 'Object Not Found' });
         return;

@@ -29,7 +29,6 @@ export class GetObjectBySpotIdService {
       spotId,
       application,
     );
-    console.log(objectRepositoryResult?.getSignedUrlOfPrivateValue());
     if (!objectRepositoryResult) {
       return undefined;
     }
