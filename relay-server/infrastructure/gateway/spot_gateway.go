@@ -13,6 +13,42 @@ import (
 
 type SpotGateway struct{}
 
+func (sg *SpotGateway) FindForIdAndRawDataFile(
+	spotId string,
+	rawDataFile []byte,
+	a *application_models_domain.Application,
+) (*spot_record.FindForIdsAndRawDataFileResponse, error) {
+	endpoint := os.Getenv("SPOT_ESTIMATION_SERVER_URL") + "/api/spot/search" + "?spotIds=" + spotId
+
+	request := common_gateway.NewRequest(a)
+	if err := request.AddFindSpotForIdsAndRawDataFileRequest(
+		config.RAW_DATA_FILE_FIELD,
+		config.RAW_DATA_FILE_NAME,
+		rawDataFile,
+	); err != nil {
+		return nil, err
+	}
+
+	resBody, err := request.MakeMultipartRequest(
+		endpoint,
+	)
+	if err != nil {
+		return nil, err
+	}
+	// 404エラーの場合
+	if resBody == nil {
+		return nil, nil
+	}
+
+	var findForIdsAndRawDataFileResponse spot_record.FindForIdsAndRawDataFileResponse
+	err = json.Unmarshal(resBody, &findForIdsAndRawDataFileResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return &findForIdsAndRawDataFileResponse, nil
+}
+
 func (sg *SpotGateway) FindForIdsAndRawDataFile(
 	spotId []string,
 	rawDataFile []byte,

@@ -12,8 +12,24 @@ type SpotResponse struct {
 	Longitude    float64        `json:"longitude"  binding:"required"`
 }
 
+type FindForIdAndRawDataFileResponse struct {
+	Spots        []SpotResponse `json:"spots"  binding:"required"`
+	Id           string         `json:"id"  binding:"required,uuid"`
+	Name         string         `json:"name"  binding:"required"`
+	Floor        int            `json:"floor"  binding:"required"`
+	LocationType string         `json:"locationType"  binding:"required"`
+	Latitude     float64        `json:"latitude"  binding:"required"`
+	Longitude    float64        `json:"longitude"  binding:"required"`
+}
+
 type FindForIdsAndRawDataFileResponse struct {
 	Spots []SpotResponse `json:"spots"  binding:"required"`
+}
+
+func (f *FindForIdsAndRawDataFileResponse) AddSpotResponse(
+	spot *SpotResponse,
+) {
+	f.Spots = append(f.Spots, *spot)
 }
 
 type FindForCoordinateAndRadiusResponse struct {

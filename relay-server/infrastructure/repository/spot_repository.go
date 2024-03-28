@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"sync"
+
 	application_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/application"
 	spot_models_domain "github.com/kajiLabTeam/xr-project-relay-server/domain/models/spot"
 	"github.com/kajiLabTeam/xr-project-relay-server/domain/repository_impl"
@@ -22,20 +24,39 @@ func (sr *SpotRepository) FindForIdsAndRawDataFile(
 	a *application_models_domain.Application,
 ) (*spot_models_domain.SpotCollection, error) {
 	findForIdsAndRawDataFileResponseFactory := spot_record.FindForIdsAndRawDataFileResponseFactory{}
-	findForIdsAndRawDataFileRes, err := sg.FindForIdsAndRawDataFile(
-		spotIds,
-		rawDataFile,
-		a,
-	)
-	if err != nil {
-		return nil, err
+	findForIdsAndRawDataFileRes := spot_record.FindForIdsAndRawDataFileResponse{}
+
+	var wg sync.WaitGroup
+	for _, id := range spotIds {
+		wg.Add(1)
+
+		go func(id string) error {
+			defer wg.Done()
+
+			findForIdAndRawDataFileRes, err := sg.FindForIdAndRawDataFile(
+				id,
+				rawDataFile,
+				a,
+			)
+			if err != nil {
+				return err
+			}
+			if findForIdAndRawDataFileRes != nil {
+				findForIdsAndRawDataFileRes.AddSpotResponse(&findForIdAndRawDataFileRes.Spots[0])
+			}
+
+			return nil
+		}(id)
+
+		wg.Wait()
 	}
-	if findForIdsAndRawDataFileRes == nil {
+
+	if len(findForIdsAndRawDataFileRes.Spots) == 0 {
 		return nil, nil
 	}
 
 	resSpotCollection, err := findForIdsAndRawDataFileResponseFactory.ToDomainSpotCollection(
-		findForIdsAndRawDataFileRes,
+		&findForIdsAndRawDataFileRes,
 	)
 	if err != nil {
 		return nil, err
