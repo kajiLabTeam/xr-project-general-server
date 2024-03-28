@@ -25,8 +25,7 @@ class FpModelGateway:
             return FpModelRecord(
                 id=data[0],
                 extension=data[1],
-                spot_id=data[2],
-                created_at=data[3],
+                spot_id=data[5],
             )
 
     def save(
@@ -39,7 +38,7 @@ class FpModelGateway:
         with conn.cursor() as cursor:
             cursor.execute(
                 sql.SQL(
-                    "INSERT INTO fp_models (id, extension, spot_id) VALUES (%s, %s, %s) RETURNING id, extension, spot_id, created_at"
+                    "INSERT INTO fp_models (id, extension, spot_id) VALUES (%s, %s, %s) RETURNING id, extension, spot_id"
                 ),
                 (fp_model_id, extension, spot_id),
             )
@@ -51,11 +50,11 @@ class FpModelGateway:
                 id=inserted_data[0],
                 extension=inserted_data[1],
                 spot_id=inserted_data[2],
-                created_at=inserted_data[3],
             )
 
     def download(self, s3: Any, key: str, application: ApplicationAggregate) -> bytes:
         key = f"{application.get_id_of_private_value()}/{FP_MODEL_BUCKET_NAME}/{key}"
+        print(key)
         obj = s3.get_object(Bucket=APPLICATION_BUCKET_NAME, Key=key)
         return obj["Body"].read()
 

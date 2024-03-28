@@ -33,7 +33,7 @@ class FpModelRepository(FpModelRepositoryImpl):
 
             # minioに登録されたファイルを取得するためのファイル名を宣言
             key = (
-                spot_id.get_id_of_private_value()
+                fp_model_record.get_id_of_private_value()
                 + "."
                 + fp_model_record.get_extension_of_private_value()
             )
@@ -75,7 +75,7 @@ class FpModelRepository(FpModelRepositoryImpl):
 
             # minioにアップロードするためのファイル名を宣言
             key = (
-                spot_id.get_id_of_private_value()
+                fp_model_insert_result.get_id_of_private_value()
                 + "."
                 + fp_model.get_extension_of_private_value()
             )

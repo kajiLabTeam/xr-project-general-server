@@ -111,7 +111,7 @@ class SpotCollectionAggregate:
 
                 print("FPモデルの損失関数の値", loss_function_value)
 
-                # 一致率が閾値を超えていない場合、スポットIDの集約から削除
+                # 一致率が閾値を超えた場合、スポットIDの集約から削除
                 if loss_function_value > FP_MODEL_LOSS_FUNCTION_VALUE_THRESHOLD:
                     self.remove_spot_id(spot_id=spot_id)
             except InfrastructureError:

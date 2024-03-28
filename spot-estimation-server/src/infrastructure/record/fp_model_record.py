@@ -4,12 +4,10 @@ class FpModelRecord:
         id: str,
         extension: str,
         spot_id: str,
-        created_at: str,
     ) -> None:
         self.__id = id
         self.__extension = extension
         self.__spot_id = spot_id
-        self.__created_at = created_at
 
     def get_id_of_private_value(self) -> str:
         return self.__id
@@ -19,6 +17,3 @@ class FpModelRecord:
 
     def get_spot_id_of_private_value(self) -> str:
         return self.__spot_id
-
-    def get_created_at_of_private_value(self) -> str:
-        return self.__created_at
