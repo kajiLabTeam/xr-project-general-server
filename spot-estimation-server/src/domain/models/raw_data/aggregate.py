@@ -5,7 +5,8 @@ from os import remove
 from typing import Tuple
 
 import pandas as pd
-from config.const import FP_MODEL_EXTENSION, FP_MODEL_TEMPORARY_SAVING_PATH
+from config.const import (FP_MODEL_EXTENSION, FP_MODEL_TEMPORARY_SAVING_PATH,
+                          RAW_DATA_EXTENSION)
 from domain.models.raw_data.raw_data_id import RawDataId
 from domain.models.raw_data.statistical_analyzer import StatisticalAnalyzer
 from domain.models.transmitter.ble import Ble, BleCollection
@@ -97,5 +98,5 @@ class RawDataAggregateFactory:
     ) -> RawDataAggregate:
         return RawDataAggregate(
             raw_data_file=raw_data_file,
-            extension="csv",
+            extension=RAW_DATA_EXTENSION,
         )

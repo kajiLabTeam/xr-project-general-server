@@ -1,8 +1,8 @@
 from io import BytesIO
 
 import pandas as pd
-from config.const import (ADDRESS_NUMBER_THRESHOLD, AVOID_ZERO_STD,
-                          RSSI_THRESHOLD)
+from config.const import (AVOID_ZERO_STD, TRANSMITTER_ADDRESS_NUMBER_THRESHOLD,
+                          TRANSMITTER_RSSI_THRESHOLD)
 
 
 class StatisticalAnalyzer:
@@ -12,7 +12,7 @@ class StatisticalAnalyzer:
     # rssiが閾値以下のデータはDFから削除
     def __based_on_rssi(self) -> None:
         self.__raw_data_df = self.__raw_data_df[
-            self.__raw_data_df["rssi"] >= RSSI_THRESHOLD
+            self.__raw_data_df["rssi"] >= TRANSMITTER_RSSI_THRESHOLD
         ]
 
     # rssiの出現回数の閾値を元にaddressを一意にする
@@ -26,7 +26,7 @@ class StatisticalAnalyzer:
 
         # 'address' の出現回数が閾値以下の行を削除
         self.__raw_data_df = self.__raw_data_df[
-            self.__raw_data_df["count"] >= ADDRESS_NUMBER_THRESHOLD
+            self.__raw_data_df["count"] >= TRANSMITTER_ADDRESS_NUMBER_THRESHOLD
         ]
 
         self.__raw_data_df = self.__raw_data_df.drop("count", axis=1)  # type: ignore
