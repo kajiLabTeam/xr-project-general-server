@@ -25,7 +25,15 @@ func (oc *ObjectCollection) GetObjectIds() []string {
 		object_ids = append(object_ids, object.GetId())
 	}
 	return object_ids
-} 
+}
+
+func (oc *ObjectCollection) GetSpotIds() []string {
+	var spot_ids []string
+	for _, object := range oc.objects {
+		spot_ids = append(spot_ids, object.GetSpotId())
+	}
+	return spot_ids
+}
 
 func (oc *ObjectCollection) AddObject(object *object_models_domain.Object) {
 	oc.objects = append(oc.objects, *object)

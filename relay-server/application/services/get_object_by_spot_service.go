@@ -49,13 +49,10 @@ func (goss *GetObjectBySpotService) Run(
 		return nil, nil, nil, nil
 	}
 
-	// 周辺スポットのIDを取得
-	areaSpotIds := areaSpotCollection.GetSpotIds()
-
 	// 周辺スポットを元にスポットに紐づくオブジェクトを取得
 	areaObjects, err := goss.objectRepo.FindForSpotIds(
 		userId,
-		areaSpotIds,
+		areaSpotCollection.GetSpotIds(),
 		application,
 	)
 	if err != nil {
@@ -71,7 +68,7 @@ func (goss *GetObjectBySpotService) Run(
 
 	// 周辺スポットをヒントにピンポイントのスポットを取得
 	spots, err := goss.spotRepo.FindForIdsAndRawDataFile(
-		areaSpotIds,
+		areaObjects.GetSpotIds(),
 		rawDataFile,
 		application,
 	)
@@ -83,13 +80,10 @@ func (goss *GetObjectBySpotService) Run(
 		return &userId, nil, areaObjects, nil
 	}
 
-	// 屋内推定をしたユーザのピンポイントのスポットIDを取得
-	spotIds := spots.GetSpotIds()
-
 	// ピンポイントのスポットを元にスポットに紐づくオブジェクトを取得
 	spotObjects, err := goss.objectRepo.FindForSpotIds(
 		userId,
-		spotIds,
+		spots.GetSpotIds(),
 		application,
 	)
 	if err != nil {
