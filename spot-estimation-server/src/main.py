@@ -26,7 +26,7 @@ async def domain_exception_handler(request: Request, exc: DomainError):
 @app.exception_handler(InfrastructureError)
 async def infrastructure_exception_handler(request: Request, exc: InfrastructureError):
     return JSONResponse(
-        status_code=500,
+        status_code=404,
         content={"error": exc.message},
     )
 
@@ -42,4 +42,4 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0")
+    uvicorn.run(app, host="0.0.0.0", port=8012)
