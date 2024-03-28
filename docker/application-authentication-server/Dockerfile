@@ -1,12 +1,8 @@
-# goバージョン
 FROM golang:1.22.0-alpine
-# アップデートとgitのインストール
-RUN apk add --update &&  apk add git
-# appディレクトリの作成
-RUN mkdir /application-authentication-server
-# ワーキングディレクトリの設定
+
 WORKDIR /application-authentication-server
-# ホストのファイルをコンテナの作業ディレクトリに移行
-ADD . /application-authentication-server
+
+COPY ./application-authentication-server /application-authentication-server
+COPY /.env /application-authentication-server/.env
 
 CMD ["go", "run", "main.go"]

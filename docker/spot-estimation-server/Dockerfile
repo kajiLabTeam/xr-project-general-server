@@ -1,33 +1,12 @@
 FROM python:3.10
-USER root
-
-RUN apt-get update
-RUN apt-get -y install locales && \
-    localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
-
-RUN mkdir /spot-estimation-server
 
 WORKDIR /spot-estimation-server
 
-ENV LANG ja_JP.UTF-8
-ENV LANGUAGE ja_JP:ja
-ENV LC_ALL ja_JP.UTF-8
-ENV TZ JST-9
-ENV TERM xterm
+COPY ./docker/spot-estimation-server/requirements.txt /spot-estimation-server/requirements.txt
 
-RUN apt-get install -y vim less
-RUN pip install --upgrade pip
-RUN pip install --upgrade setuptools
+RUN pip install --upgrade pip && pip install --no-cache-dir --upgrade -r /spot-estimation-server/requirements.txt
 
-RUN python -m pip install python-dotenv
-RUN python -m pip install boto3
-RUN python -m pip install fastapi
-RUN python -m pip install uvicorn
-RUN python -m pip install python-ulid
-RUN python -m pip install psycopg2-binary
-RUN python -m pip install python-multipart
-RUN python -m pip install pandas
-RUN python -m pip install numpy
-RUN python -m pip install scipy
+COPY ./spot-estimation-server /spot-estimation-server
+COPY /.env /spot-estimation-server/.env
 
 CMD ["python", "src/main.py"]

@@ -18,7 +18,6 @@ services:
   postgres:
     container_name: postgres
     image: postgres:15
-    restart: always
     ports:
       - "5432:5432"
     volumes:
@@ -30,65 +29,45 @@ services:
 
   relay-server:
     container_name: relay-server
-    restart: always
     build:
-      context: ./docker/relay-server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./docker/relay-server/Dockerfile
     stdin_open: true
-    volumes:
-      - ./relay-server:/relay-server
-      - ./.env:/relay-server/.env
     ports:
       - 8000:8080
 
   application-authentication-server:
     container_name: application-authentication-server
-    restart: always
     build:
-      context: ./docker/application-authentication-server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./docker/application-authentication-server/Dockerfile
     stdin_open: true
-    volumes:
-      - ./application-authentication-server:/application-authentication-server
-      - ./.env:/application-authentication-server/.env
     ports:
       - 8001:8080
 
   area-estimation-server:
     container_name: area-estimation-server
-    restart: always
-    build: 
-      context: ./docker/area-estimation-server
-      dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: ./docker/area-estimation-server/Dockerfile
     stdin_open: true
-    volumes:
-      - ./area-estimation-server:/area-estimation-server
-      - ./.env:/area-estimation-server/.env
     ports:
       - 8002:8000
 
   spot-estimation-server:
     container_name: spot-estimation-server
-    restart: always
-    build: 
-      context: ./docker/spot-estimation-server
-      dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: ./docker/spot-estimation-server/Dockerfile
     stdin_open: true
-    volumes:
-      - ./spot-estimation-server:/spot-estimation-server
-      - ./.env:/spot-estimation-server/.env
     ports:
       - 8003:8000
 
   object-server:
     container_name: object-server
-    restart: always
-    build: 
-      context: ./docker/object-server
-      dockerfile: Dockerfile
+    build:
+      context: .
+      dockerfile: ./docker/object-server/Dockerfile
     stdin_open: true
-    volumes:
-      - ./object-server:/object-server
-      - ./.env:/object-server/.env
     ports:
       - 8004:3000
