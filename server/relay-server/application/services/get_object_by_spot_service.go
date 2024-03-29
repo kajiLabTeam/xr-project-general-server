@@ -46,7 +46,7 @@ func (goss *GetObjectBySpotService) Run(
 	}
 	// 周辺スポットがない場合
 	if areaSpotCollection == nil {
-		return nil, nil, nil, nil
+		return &userId, nil, nil, nil
 	}
 
 	// 周辺スポットを元にスポットに紐づくオブジェクトを取得
@@ -56,7 +56,7 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return &userId, nil, nil, err
+		return nil, nil, nil, err
 	}
 	// 周辺スポットに紐づくオブジェクトがない場合
 	if areaObjects == nil {
@@ -73,7 +73,7 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return &userId, nil, nil, err
+		return nil, nil, nil, err
 	}
 	// ピンポイントのスポットがない場合
 	if spots == nil {
@@ -87,7 +87,7 @@ func (goss *GetObjectBySpotService) Run(
 		application,
 	)
 	if err != nil {
-		return &userId, nil, nil, err
+		return nil, nil, nil, err
 	}
 	// ピンポイントのスポットに紐づくオブジェクトがない場合
 	if spotObjects == nil {
