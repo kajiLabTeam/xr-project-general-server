@@ -6,7 +6,7 @@ COPY ./docker/area-estimation-server/requirements.txt /area-estimation-server/re
 
 RUN pip install --upgrade pip && pip install --no-cache-dir --upgrade -r  /area-estimation-server/requirements.txt
 
-COPY ./area-estimation-server /area-estimation-server
+COPY /server/area-estimation-server /area-estimation-server
 COPY /.env /area-estimation-server/.env
 
 CMD ["python", "src/main.py"]
