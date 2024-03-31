@@ -37,7 +37,7 @@ class TransmitterRepository(TransmitterRepositoryImpl):
                 Ble(
                     ssid=ble_record.get_ssid_of_private_value(),
                     name=ble_record.get_name_of_private_value(),
-                    rssi=10,
+                    rssi=ble_record.get_rssi_of_private_value(),
                 )
                 for ble_record in transmitter_record.get_ble_record_collection_of_private_value()
             ]
