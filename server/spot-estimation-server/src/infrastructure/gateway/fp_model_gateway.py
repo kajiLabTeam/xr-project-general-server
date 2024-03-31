@@ -54,7 +54,6 @@ class FpModelGateway:
 
     def download(self, s3: Any, key: str, application: ApplicationAggregate) -> bytes:
         key = f"{application.get_id_of_private_value()}/{FP_MODEL_BUCKET_NAME}/{key}"
-        print(key)
         obj = s3.get_object(Bucket=APPLICATION_BUCKET_NAME, Key=key)
         return obj["Body"].read()
 
