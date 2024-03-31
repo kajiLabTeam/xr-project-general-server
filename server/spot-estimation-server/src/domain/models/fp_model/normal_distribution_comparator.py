@@ -49,7 +49,6 @@ class NormalDistributionComparator:
         """
         KLダイバージェンスの計算
         """
-        # KLダイバージェンスの被積分関数
         integrand = lambda x: self.__normal_pdf(x, p_mean, p_std) * np.log(  # type: ignore
             self.__normal_pdf(x, p_mean, p_std) / self.__normal_pdf(x, q_mean, q_std)
         )
