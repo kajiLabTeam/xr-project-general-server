@@ -1,6 +1,7 @@
 from collections import defaultdict
 from typing import Dict, List
 
+import numpy as np
 from config.const import TRANSMITTER_THRESHOLD_NUMBER
 from domain.models.transmitter.ble_id import BleId
 
@@ -58,23 +59,28 @@ class BleCollection:
 
     # ssidの一致率を計測
     def measuring_match_rates(self, ble_collection: "BleCollection") -> float:
-        # BLEのssid一致率を計測
-        ble_ssids = [
+        # BLEのSSIDを集合に変換
+        ble_ssids_set = {
             ble.get_ssid_of_private_value()
             for ble in self.get_ble_list_of_private_value()
-        ]
-        ble_ssid_match_count = sum(
-            1
-            for ble_ssid in ble_ssids
-            if ble_ssid
-            in [
-                ble.get_ssid_of_private_value()
-                for ble in ble_collection.get_ble_list_of_private_value()
-            ]
-        )
-        ble_ssid_match_ratio = ble_ssid_match_count / max(len(ble_ssids), 1)
+        }
 
-        return ble_ssid_match_ratio
+        # 比較対象のBLEコレクションのSSIDを集合に変換
+        compare_ssids_set = {
+            ble.get_ssid_of_private_value()
+            for ble in ble_collection.get_ble_list_of_private_value()
+        }
+
+        # 一致するSSIDの数を計算
+        match_count = len(ble_ssids_set.intersection(compare_ssids_set))
+
+        # SSIDの数を取得
+        total_ssids = max(len(ble_ssids_set), 1)
+
+        # 一致率を計算
+        match_ratio = match_count / total_ssids
+
+        return match_ratio
 
     # 一定数以上のデータを残し、一意なSSIDでRSSIを平均化する
     def process_ble_collection(self) -> "BleCollection":
@@ -86,10 +92,10 @@ class BleCollection:
                 ble.get_rssi_of_private_value()
             )
 
-        processed_wifi_collection = BleCollection()
+        processed_ble_collection = BleCollection()
         for ssid, rssi_list in ssid_rssi_mapping.items():
             if len(rssi_list) > TRANSMITTER_THRESHOLD_NUMBER:  # 要素数が1つのものは削除
-                avg_rssi = sum(rssi_list) / len(rssi_list)  # RSSIの平均値を計算
-                processed_wifi_collection.add_ble(Ble(ssid=ssid, rssi=avg_rssi))
+                avg_rssi = np.mean(rssi_list)
+                processed_ble_collection.add_ble(Ble(ssid=ssid, rssi=avg_rssi))  # type: ignore
 
-        return processed_wifi_collection
+        return processed_ble_collection

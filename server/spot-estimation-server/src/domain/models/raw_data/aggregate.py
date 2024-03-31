@@ -1,6 +1,6 @@
 import csv
 import re
-from io import BytesIO
+from io import BytesIO, StringIO
 from os import remove
 from typing import Tuple
 
@@ -49,10 +49,14 @@ class RawDataAggregate:
 
     # 生データからBLEとWIFIの発信機情報を抽出
     def extract_transmitter(self) -> Tuple[BleCollection, WifiCollection]:
-        bytes_io = BytesIO(self.__raw_data_file)
-        csv_reader = csv.reader(bytes_io.read().decode("utf-8").splitlines())
         ble_collection = BleCollection()
         wifi_collection = WifiCollection()
+
+        # 生データファイルを文字列として読み込む
+        raw_data_string = self.__raw_data_file.decode("utf-8")
+
+        # 文字列IOを作成し、CSVリーダーを初期化
+        csv_reader = csv.reader(StringIO(raw_data_string))
 
         # ヘッダーをスキップ
         next(csv_reader, None)
