@@ -69,7 +69,8 @@ CREATE TABLE wifis (
     rssi DECIMAL(5, 2),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE,
-    deleted_at TIMESTAMP WITH TIME ZONE
+    deleted_at TIMESTAMP WITH TIME ZONE,
+    spot_id VARCHAR(26) REFERENCES spots(id)
 );
 
 CREATE TABLE bles (
@@ -79,7 +80,8 @@ CREATE TABLE bles (
     rssi DECIMAL(5, 2),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE,
-    deleted_at TIMESTAMP WITH TIME ZONE
+    deleted_at TIMESTAMP WITH TIME ZONE,
+    spot_id VARCHAR(26) REFERENCES spots(id)
 );
 
 CREATE TABLE wifi_thresholds (
@@ -114,18 +116,6 @@ CREATE TABLE raw_data (
     updated_at TIMESTAMP WITH TIME ZONE,
     deleted_at TIMESTAMP WITH TIME ZONE,
     spot_id VARCHAR(26) REFERENCES spots(id)
-);
-
-CREATE TABLE spots_bles (
-    id VARCHAR(26) PRIMARY KEY,
-    spot_id VARCHAR(26) REFERENCES spots(id) NOT NULL,
-    ble_id VARCHAR(26) REFERENCES bles(id) NOT NULL
-);
-
-CREATE TABLE spots_wifis (
-    id VARCHAR(26) PRIMARY KEY,
-    spot_id VARCHAR(26) REFERENCES spots(id) NOT NULL,
-    wifi_id VARCHAR(26) REFERENCES wifis(id) NOT NULL
 );
 
 CREATE TABLE objects (

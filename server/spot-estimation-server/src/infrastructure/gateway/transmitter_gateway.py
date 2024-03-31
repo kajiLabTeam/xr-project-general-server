@@ -4,7 +4,6 @@ from infrastructure.record.transmitter_record import (BleRecord,
                                                       TransmitterRecord,
                                                       WifiRecord)
 from psycopg2.extensions import connection
-from utils.ulid import generate_ulid
 
 
 class TransmitterGateway:
@@ -12,34 +11,18 @@ class TransmitterGateway:
         self, conn: connection, spot_id: str
     ) -> Optional[TransmitterRecord]:
         with conn.cursor() as cursor:
+            # spot_idを元にwifiテーブルからwifiデータを取得
             cursor.execute(
-                "SELECT array_agg(wifi_id) FROM spots_wifis WHERE spot_id = %s",
+                "SELECT * FROM wifis WHERE spot_id = %s",
                 (spot_id,),
-            )
-            wifi_ids = cursor.fetchall()[0][0]
-
-            # 中間テーブルからspot_idに紐づくble_idを取得
-            cursor.execute(
-                "SELECT array_agg(ble_id) FROM spots_bles WHERE spot_id = %s",
-                (spot_id,),
-            )
-            ble_ids = cursor.fetchall()[0][0]
-
-            if not wifi_ids and not ble_ids:
-                return None
-
-            # wifi_idsを元にwifiテーブルからwifiデータを取得
-            cursor.execute(
-                "SELECT * FROM wifis WHERE id = ANY(%s)",
-                ([wifi_id for wifi_id in wifi_ids],),
             )
 
             wifi_data = cursor.fetchall()
 
-            # ble_idsを元にbleテーブルからbleデータを取得
+            # spot_idを元にbleテーブルからbleデータを取得
             cursor.execute(
-                "SELECT * FROM bles WHERE id = ANY(%s)",
-                ([ble_id for ble_id in ble_ids],),
+                "SELECT * FROM bles WHERE spot_id = %s",
+                (spot_id,),
             )
 
             ble_data = cursor.fetchall()
@@ -82,7 +65,7 @@ class TransmitterGateway:
     ) -> Optional[TransmitterRecord]:
         with conn.cursor() as cursor:
             cursor.executemany(
-                "INSERT INTO wifis (id, name, ssid, mac_address, rssi) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, ssid, mac_address",
+                "INSERT INTO wifis (id, name, ssid, mac_address, rssi, spot_id) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id, name, ssid, mac_address",
                 [
                     (
                         wifi.get_id_of_private_value(),
@@ -90,42 +73,21 @@ class TransmitterGateway:
                         wifi.get_ssid_of_private_value(),
                         wifi.get_mac_address_of_private_value(),
                         wifi.get_rssi_of_private_value(),
-                    )
-                    for wifi in wifi_collection
-                ],
-            )
-
-            cursor.executemany(
-                "INSERT INTO spots_wifis (id, spot_id, wifi_id) VALUES (%s, %s, %s)",
-                [
-                    (
-                        str(generate_ulid()),
                         spot_id,
-                        wifi.get_id_of_private_value(),
                     )
                     for wifi in wifi_collection
                 ],
             )
 
             cursor.executemany(
-                "INSERT INTO bles (id, name, ssid) VALUES (%s, %s, %s) RETURNING id, name, ssid",
+                "INSERT INTO bles (id, name, ssid, rssi, spot_id) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, ssid",
                 [
                     (
                         ble.get_id_of_private_value(),
                         ble.get_name_of_private_value(),
                         ble.get_ssid_of_private_value(),
-                    )
-                    for ble in ble_collection
-                ],
-            )
-
-            cursor.executemany(
-                "INSERT INTO spots_bles (id, spot_id, ble_id) VALUES (%s, %s, %s)",
-                [
-                    (
-                        str(generate_ulid()),
+                        ble.get_rssi_of_private_value(),
                         spot_id,
-                        ble.get_id_of_private_value(),
                     )
                     for ble in ble_collection
                 ],
