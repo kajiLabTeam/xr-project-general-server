@@ -66,6 +66,9 @@ class TransmitterAggregateFactory:
     ) -> TransmitterAggregate:
         ble_collection, wifi_collection = raw_data.extract_transmitter()
 
+        wifi_collection.re_typing_id()
+        ble_collection.re_typing_id()
+
         return TransmitterAggregate(
             ble_collection=ble_collection,
             wifi_collection=wifi_collection,
