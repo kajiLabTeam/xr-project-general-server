@@ -1,12 +1,12 @@
 import csv
-import re
 from io import BytesIO, StringIO
 from os import remove
 from typing import Tuple
 
 import pandas as pd
-from config.const import (FP_MODEL_EXTENSION, FP_MODEL_TEMPORARY_SAVING_PATH,
-                          RAW_DATA_EXTENSION)
+from config.const import (BLE_NAME, FP_MODEL_EXTENSION,
+                          FP_MODEL_TEMPORARY_SAVING_PATH, RAW_DATA_EXTENSION,
+                          WIFI_NAME)
 from domain.models.raw_data.raw_data_id import RawDataId
 from domain.models.raw_data.statistical_analyzer import StatisticalAnalyzer
 from domain.models.transmitter.ble import Ble, BleCollection
@@ -40,13 +40,6 @@ class RawDataAggregate:
 
         return csv_bytes
 
-    def __is_mac_address(self, mac_address: str) -> bool:
-        # MACアドレスの正規表現パターン
-        mac_pattern = re.compile(r"^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$")
-
-        # パターンに一致するかどうかを判定
-        return bool(mac_pattern.match(mac_address))
-
     # 生データからBLEとWIFIの発信機情報を抽出
     def extract_transmitter(self) -> Tuple[BleCollection, WifiCollection]:
         ble_collection = BleCollection()
@@ -66,12 +59,13 @@ class RawDataAggregate:
             if len(row) == 3:
                 rssi = int(row[1])
                 address = row[2]
+                transmitter_type = row[3]
 
-                if self.__is_mac_address(address):
+                if transmitter_type == WIFI_NAME:
                     wifi_collection.add_wifi(
                         Wifi(ssid="", rssi=rssi, mac_address=address)
                     )
-                else:
+                if transmitter_type == BLE_NAME:
                     ble_collection.add_ble(Ble(ssid=address, rssi=rssi))
 
         return (
