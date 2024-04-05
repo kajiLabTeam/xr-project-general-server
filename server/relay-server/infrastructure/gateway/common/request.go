@@ -116,7 +116,7 @@ func (r *Request) MakeApplicationJsonRequest(endpoint string, req AnyStructType)
 	if response.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
-	if response.StatusCode != http.StatusOK {
+	if response.StatusCode != http.StatusOK && response.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("status code: %d", response.StatusCode)
 	}
 	defer response.Body.Close()
@@ -148,7 +148,7 @@ func (r *Request) MakeMultipartRequest(endpoint string) ([]byte, error) {
 	if response.StatusCode == http.StatusNotFound {
 		return nil, nil
 	}
-	if response.StatusCode != http.StatusOK {
+	if response.StatusCode != http.StatusOK && response.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("status code: %d", response.StatusCode)
 	}
 	defer response.Body.Close()
