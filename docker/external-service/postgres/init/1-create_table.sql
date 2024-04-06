@@ -62,7 +62,6 @@ CREATE TABLE coordinates (
 CREATE TABLE wifis (
     id VARCHAR(26) PRIMARY KEY,
     name VARCHAR(50),
-    ssid VARCHAR(50),
     mac_address VARCHAR(17) NOT NULL CHECK (
         mac_address ~* '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})'
     ) NOT NULL,
@@ -76,7 +75,9 @@ CREATE TABLE wifis (
 CREATE TABLE bles (
     id VARCHAR(26) PRIMARY KEY,
     name VARCHAR(50),
-    ssid VARCHAR(50),
+    mac_address VARCHAR(17) NOT NULL CHECK (
+        mac_address ~* '([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})'
+    ) NOT NULL,
     rssi DECIMAL(5, 2),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE,
