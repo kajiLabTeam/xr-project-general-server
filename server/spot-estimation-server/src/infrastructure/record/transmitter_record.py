@@ -102,7 +102,7 @@ class TransmitterRecordFactory:
                 WifiRecord(
                     id=wifi.get_id_of_private_value().get_id_of_private_value(),
                     name=wifi.get_name_of_private_value(),
-                    mac_address=wifi.get_mac_address_private_value(),
+                    mac_address=wifi.get_mac_address_of_private_value(),
                     rssi=wifi.get_rssi_private_value(),
                 )
                 for wifi in wifi_collection

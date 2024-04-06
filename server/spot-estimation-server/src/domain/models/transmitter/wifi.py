@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 from config.const import TRANSMITTER_THRESHOLD_NUMBER
@@ -11,10 +11,10 @@ class Wifi:
         self,
         rssi: float,
         mac_address: str,
-        name: str = "",
+        name: Optional[str] = None,
     ):
         self.__id = WifiId()
-        self.__name = name
+        self.__name = name if name is not None else ""
         self.__rssi = round(rssi, 2)
         self.__mac_address = mac_address
 
@@ -27,13 +27,13 @@ class Wifi:
     def get_rssi_private_value(self) -> float:
         return self.__rssi
 
-    def get_mac_address_private_value(self) -> str:
+    def get_mac_address_of_private_value(self) -> str:
         return self.__mac_address
 
 
 class WifiCollection:
-    def __init__(self, wifi_list: List[Wifi] = []):
-        self.__wifi_list = wifi_list
+    def __init__(self, wifi_list: Optional[List[Wifi]] = None):
+        self.__wifi_list = wifi_list if wifi_list is not None else []
 
     def get_wifi_list_of_private_value(self) -> List[Wifi]:
         return self.__wifi_list
@@ -52,7 +52,7 @@ class WifiCollection:
         self.__wifi_list = [
             Wifi(
                 rssi=wifi.get_rssi_private_value(),
-                mac_address=wifi.get_mac_address_private_value(),
+                mac_address=wifi.get_mac_address_of_private_value(),
                 name=wifi.get_name_of_private_value(),
             )
             for wifi in self.__wifi_list
@@ -62,13 +62,13 @@ class WifiCollection:
     def measuring_match_rates(self, wifi_collection: "WifiCollection") -> float:
         # WiFiのMACアドレスを集合に変換
         wifi_mac_set = {
-            wifi.get_mac_address_private_value()
+            wifi.get_mac_address_of_private_value()
             for wifi in self.get_wifi_list_of_private_value()
         }
 
         # 比較対象のWiFiコレクションのMACアドレスを集合に変換
         compare_mac_set = {
-            wifi.get_mac_address_private_value()
+            wifi.get_mac_address_of_private_value()
             for wifi in wifi_collection.get_wifi_list_of_private_value()
         }
 
@@ -89,7 +89,7 @@ class WifiCollection:
 
         # mac_addressを元にRSSIをグループ化
         for wifi in self.get_wifi_list_of_private_value():
-            mac_address_rssi_mapping[wifi.get_mac_address_private_value()].append(
+            mac_address_rssi_mapping[wifi.get_mac_address_of_private_value()].append(
                 wifi.get_rssi_private_value()
             )
 

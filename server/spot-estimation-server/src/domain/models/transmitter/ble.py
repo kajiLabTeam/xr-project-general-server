@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 from config.const import TRANSMITTER_THRESHOLD_NUMBER
@@ -11,10 +11,10 @@ class Ble:
         self,
         rssi: float,
         mac_address: str,
-        name: str = "",
+        name: Optional[str] = "",
     ):
         self.__id = BleId()
-        self.__name = name
+        self.__name = name if name is not None else ""
         self.__rssi = round(rssi, 2)
         self.__mac_address = mac_address
 
@@ -32,8 +32,8 @@ class Ble:
 
 
 class BleCollection:
-    def __init__(self, ble_list: List[Ble] = []):
-        self.__ble_list = ble_list
+    def __init__(self, ble_list: Optional[List[Ble]] = None):
+        self.__ble_list = ble_list if ble_list is not None else []
 
     def get_ble_list_of_private_value(self) -> List[Ble]:
         return self.__ble_list
