@@ -11,7 +11,7 @@ class Ble:
         self,
         rssi: float,
         mac_address: str,
-        name: Optional[str] = "",
+        name: Optional[str] = None,
     ):
         self.__id = BleId()
         self.__name = name if name is not None else ""
