@@ -9,14 +9,12 @@ from domain.models.transmitter.wifi_id import WifiId
 class Wifi:
     def __init__(
         self,
-        ssid: str,
         rssi: float,
         mac_address: str,
         name: str = "",
     ):
         self.__id = WifiId()
         self.__name = name
-        self.__ssid = ssid
         self.__rssi = round(rssi, 2)
         self.__mac_address = mac_address
 
@@ -25,9 +23,6 @@ class Wifi:
 
     def get_name_of_private_value(self) -> str:
         return self.__name
-
-    def get_ssid_private_value(self) -> str:
-        return self.__ssid
 
     def get_rssi_private_value(self) -> float:
         return self.__rssi
@@ -56,7 +51,6 @@ class WifiCollection:
     def re_typing_id(self):
         self.__wifi_list = [
             Wifi(
-                ssid=wifi.get_ssid_private_value(),
                 rssi=wifi.get_rssi_private_value(),
                 mac_address=wifi.get_mac_address_private_value(),
                 name=wifi.get_name_of_private_value(),
@@ -89,22 +83,22 @@ class WifiCollection:
 
         return match_ratio
 
-    # 一定数以上のデータを残し、一意なSSIDでRSSIを平均化する
+    # 一定数以上のデータを残し、一意なmac_addressでRSSIを平均化する
     def process_wifi_collection(self) -> "WifiCollection":
-        ssid_rssi_mapping: Dict[str, List[float]] = defaultdict(list)
+        mac_address_rssi_mapping: Dict[str, List[float]] = defaultdict(list)
 
-        # SSIDを元にRSSIをグループ化
+        # mac_addressを元にRSSIをグループ化
         for wifi in self.get_wifi_list_of_private_value():
-            ssid_rssi_mapping[wifi.get_mac_address_private_value()].append(
+            mac_address_rssi_mapping[wifi.get_mac_address_private_value()].append(
                 wifi.get_rssi_private_value()
             )
 
         processed_wifi_collection = WifiCollection()
-        for ssid, rssi_list in ssid_rssi_mapping.items():
+        for mac_address, rssi_list in mac_address_rssi_mapping.items():
             if len(rssi_list) > TRANSMITTER_THRESHOLD_NUMBER:  # 要素数が1つのものは削除
                 avg_rssi = np.mean(rssi_list)  # RSSIの平均値を計算
                 processed_wifi_collection.add_wifi(
-                    Wifi(ssid="", rssi=avg_rssi, mac_address=ssid)  # type: ignore
+                    Wifi(rssi=avg_rssi, mac_address=mac_address)  # type: ignore
                 )
 
         return processed_wifi_collection

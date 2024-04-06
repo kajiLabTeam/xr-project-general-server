@@ -34,9 +34,8 @@ class TransmitterGateway:
                 WifiRecord(
                     id=wifi[0],
                     name=wifi[1],
-                    ssid=wifi[2],
-                    rssi=wifi[4],
-                    mac_address=wifi[3],
+                    mac_address=wifi[2],
+                    rssi=wifi[3],
                 )
                 for wifi in wifi_data
             ]
@@ -45,7 +44,7 @@ class TransmitterGateway:
                 BleRecord(
                     id=ble[0],
                     name=ble[1],
-                    ssid=ble[2],
+                    mac_address=ble[2],
                     rssi=ble[3],
                 )
                 for ble in ble_data
@@ -65,12 +64,11 @@ class TransmitterGateway:
     ) -> Optional[TransmitterRecord]:
         with conn.cursor() as cursor:
             cursor.executemany(
-                "INSERT INTO wifis (id, name, ssid, mac_address, rssi, spot_id) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id, name, ssid, mac_address",
+                "INSERT INTO wifis (id, name, mac_address, rssi, spot_id) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, mac_address",
                 [
                     (
                         wifi.get_id_of_private_value(),
                         wifi.get_name_of_private_value(),
-                        wifi.get_ssid_of_private_value(),
                         wifi.get_mac_address_of_private_value(),
                         wifi.get_rssi_of_private_value(),
                         spot_id,
@@ -80,13 +78,13 @@ class TransmitterGateway:
             )
 
             cursor.executemany(
-                "INSERT INTO bles (id, name, ssid, rssi, spot_id) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, ssid",
+                "INSERT INTO bles (id, name, rssi, mac_address, spot_id) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, mac_address",
                 [
                     (
                         ble.get_id_of_private_value(),
                         ble.get_name_of_private_value(),
-                        ble.get_ssid_of_private_value(),
                         ble.get_rssi_of_private_value(),
+                        ble.get_mac_address_of_private_value(),
                         spot_id,
                     )
                     for ble in ble_collection

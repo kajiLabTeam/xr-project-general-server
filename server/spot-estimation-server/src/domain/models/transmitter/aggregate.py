@@ -37,10 +37,10 @@ class TransmitterAggregate:
 
     def is_match_connection(self, transmitter: "TransmitterAggregate") -> bool:
         """
-        BLEの場合はssid、WIFIの場合はmac_addressの一致率を計測, そして閾値を超えたらTrueを返す
+        BLEの場合はaddress、WIFIの場合はmac_addressの一致率を計測, そして閾値を超えたらTrueを返す
         """
-        # BLEのssid一致率を計測
-        ble_ssid_match_ratio = self.__ble_collection.measuring_match_rates(
+        # BLEのaddress一致率を計測
+        ble_address_match_ratio = self.__ble_collection.measuring_match_rates(
             transmitter.__ble_collection
         )
 
@@ -49,11 +49,11 @@ class TransmitterAggregate:
             transmitter.__wifi_collection
         )
 
-        print(f"BLEのssid一致率: {ble_ssid_match_ratio}")
+        print(f"BLEのaddress一致率: {ble_address_match_ratio}")
         print(f"WIFIのmac_address一致率: {wifi_mac_match_ratio}")
 
-        # BLEのssidとWiFiのmac_addressの一致率を結合して合計を計算
-        total_match_ratio = (ble_ssid_match_ratio + wifi_mac_match_ratio) / 2
+        # BLEのaddressとWiFiのmac_addressの一致率を結合して合計を計算
+        total_match_ratio = (ble_address_match_ratio + wifi_mac_match_ratio) / 2
 
         # 合計が閾値を超えたらTrueを返す
         return total_match_ratio >= TRANSMITTER_COINCIDENT_RATIO_THRESHOLD

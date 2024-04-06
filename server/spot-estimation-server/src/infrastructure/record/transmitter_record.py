@@ -9,14 +9,12 @@ class WifiRecord:
         self,
         id: str,
         name: str,
-        ssid: str,
         mac_address: str,
         rssi: float,
         created_at: str = "",
     ) -> None:
         self.__id = id
         self.__name = name
-        self.__ssid = ssid
         self.__mac_address = mac_address
         self.__rssi = rssi
         self.__created_at = created_at
@@ -26,9 +24,6 @@ class WifiRecord:
 
     def get_name_of_private_value(self) -> str:
         return self.__name
-
-    def get_ssid_of_private_value(self) -> str:
-        return self.__ssid
 
     def get_mac_address_of_private_value(self) -> str:
         return self.__mac_address
@@ -45,13 +40,13 @@ class BleRecord:
         self,
         id: str,
         name: str,
-        ssid: str,
+        mac_address: str,
         rssi: float,
         created_at: str = "",
     ) -> None:
         self.__id = id
         self.__name = name
-        self.__ssid = ssid
+        self.__mac_address = mac_address
         self.__rssi = rssi
         self.__created_at = created_at
 
@@ -61,8 +56,8 @@ class BleRecord:
     def get_name_of_private_value(self) -> str:
         return self.__name
 
-    def get_ssid_of_private_value(self) -> str:
-        return self.__ssid
+    def get_mac_address_of_private_value(self) -> str:
+        return self.__mac_address
 
     def get_rssi_of_private_value(self) -> float:
         return self.__rssi
@@ -98,7 +93,7 @@ class TransmitterRecordFactory:
                 BleRecord(
                     id=ble.get_id_of_private_value().get_id_of_private_value(),
                     name=ble.get_name_of_private_value(),
-                    ssid=ble.get_ssid_of_private_value(),
+                    mac_address=ble.get_mac_address_of_private_value(),
                     rssi=ble.get_rssi_of_private_value(),
                 )
                 for ble in ble_collection
@@ -107,7 +102,6 @@ class TransmitterRecordFactory:
                 WifiRecord(
                     id=wifi.get_id_of_private_value().get_id_of_private_value(),
                     name=wifi.get_name_of_private_value(),
-                    ssid=wifi.get_ssid_private_value(),
                     mac_address=wifi.get_mac_address_private_value(),
                     rssi=wifi.get_rssi_private_value(),
                 )

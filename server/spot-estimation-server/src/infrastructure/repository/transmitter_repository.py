@@ -35,8 +35,8 @@ class TransmitterRepository(TransmitterRepositoryImpl):
 
             ble_collection: List[Ble] = [
                 Ble(
-                    ssid=ble_record.get_ssid_of_private_value(),
                     name=ble_record.get_name_of_private_value(),
+                    mac_address=ble_record.get_mac_address_of_private_value(),
                     rssi=ble_record.get_rssi_of_private_value(),
                 )
                 for ble_record in transmitter_record.get_ble_record_collection_of_private_value()
@@ -44,7 +44,6 @@ class TransmitterRepository(TransmitterRepositoryImpl):
             wifi_collection: List[Wifi] = [
                 Wifi(
                     name=wifi_record.get_name_of_private_value(),
-                    ssid=wifi_record.get_ssid_of_private_value(),
                     mac_address=wifi_record.get_mac_address_of_private_value(),
                     rssi=wifi_record.get_rssi_of_private_value(),
                 )

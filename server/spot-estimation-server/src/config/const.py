@@ -2,8 +2,8 @@ from utils.ulid import generate_ulid
 
 APPLICATION_BUCKET_NAME: str = "applications"
 
-BLE_NAME: str = "ble"
-WIFI_NAME: str = "wifi"
+BLE_NAME = "ble"
+WIFI_NAME = "wifi"
 
 TRANSMITTER_RSSI_THRESHOLD: int = -80
 TRANSMITTER_THRESHOLD_NUMBER: int = 2

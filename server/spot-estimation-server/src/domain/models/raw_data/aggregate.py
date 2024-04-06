@@ -56,17 +56,15 @@ class RawDataAggregate:
 
         # 1行ずつ読み込む
         for row in csv_reader:
-            if len(row) == 3:
+            if len(row) == 4:
                 rssi = int(row[1])
                 address = row[2]
                 transmitter_type = row[3]
 
                 if transmitter_type == WIFI_NAME:
-                    wifi_collection.add_wifi(
-                        Wifi(ssid="", rssi=rssi, mac_address=address)
-                    )
-                if transmitter_type == BLE_NAME:
-                    ble_collection.add_ble(Ble(ssid=address, rssi=rssi))
+                    wifi_collection.add_wifi(Wifi(rssi=rssi, mac_address=address))
+                elif transmitter_type == BLE_NAME:
+                    ble_collection.add_ble(Ble(rssi=rssi, mac_address=address))
 
         return (
             ble_collection.process_ble_collection(),
