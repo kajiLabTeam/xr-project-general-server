@@ -47,16 +47,6 @@ class BleCollection:
     def extract_id_ble_collection(self) -> List[BleId]:
         return [ble.get_id_of_private_value() for ble in self.__ble_list]
 
-    # INFO : リクエストの度に同じIDを生成するので、IDを再生成する
-    def re_typing_id(self):
-        self.__ble_list = [
-            Ble(
-                rssi=ble.get_rssi_of_private_value(),
-                mac_address=ble.get_mac_address_of_private_value(),
-            )
-            for ble in self.__ble_list
-        ]
-
     # mac_addressの一致率を計測
     def measuring_match_rates(self, ble_collection: "BleCollection") -> float:
         # BLEのmac_addressを集合に変換

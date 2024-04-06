@@ -47,17 +47,6 @@ class WifiCollection:
     def extract_id_wifi_collection(self) -> List[WifiId]:
         return [wifi.get_id_of_private_value() for wifi in self.__wifi_list]
 
-    # INFO : リクエストの度に同じIDを生成するので、IDを再生成する
-    def re_typing_id(self):
-        self.__wifi_list = [
-            Wifi(
-                rssi=wifi.get_rssi_private_value(),
-                mac_address=wifi.get_mac_address_of_private_value(),
-                name=wifi.get_name_of_private_value(),
-            )
-            for wifi in self.__wifi_list
-        ]
-
     # mac_addressの一致率を計測
     def measuring_match_rates(self, wifi_collection: "WifiCollection") -> float:
         # WiFiのMACアドレスを集合に変換
