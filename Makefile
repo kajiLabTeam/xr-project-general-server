@@ -3,6 +3,9 @@
 up:
 	docker compose build && docker compose up -d
 
+logs:
+	docker compose logs -f
+
 db:
 	docker exec -it $(POSTGRES_HOST) psql -U $(POSTGRES_USER) -d $(POSTGRES_DB)
 
