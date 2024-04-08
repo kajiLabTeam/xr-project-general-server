@@ -1,3 +1,5 @@
+from typing import Optional
+
 from domain.model.spot.coordinate import Coordinate
 from domain.model.spot.location_type import LocationType
 from domain.model.spot.spot_id import SpotAggregateId
@@ -11,9 +13,9 @@ class SpotAggregate:
         floors: int,
         location_type: LocationType,
         coordinate: Coordinate,
-        id: SpotAggregateId = SpotAggregateId(),
+        id: Optional[SpotAggregateId] = None,
     ) -> None:
-        self.__id = id
+        self.__id = id if id is not None else SpotAggregateId()
         self.__name = name
         self.__floors = floors
         self.__locationType = location_type
