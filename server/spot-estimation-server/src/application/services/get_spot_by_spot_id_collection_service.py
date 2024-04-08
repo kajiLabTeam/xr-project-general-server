@@ -54,8 +54,6 @@ class GetSpotBySpotIdCollectionService:
         if len(spot_collection.get_id_collection_of_private_value()) == 0:
             return None
 
-
-
         # FPモデルを元にスポットを一意に特定する
         spot_collection.identify_spot_by_fp_model(
             s3=s3,

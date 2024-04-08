@@ -1,6 +1,5 @@
 from io import BytesIO
-from typing import Any
-from typing import List
+from typing import Any, List
 
 import numpy as np
 import pandas as pd
@@ -66,7 +65,11 @@ class NormalDistributionComparator:
         """
         normal_distribution = 0
         for p_mean, p_std, q_mean, q_std in zip(
-            self.__p_mean_list, self.__p_std_list, self.__q_mean_list, self.__q_std_list, strict=False
+            self.__p_mean_list,
+            self.__p_std_list,
+            self.__q_mean_list,
+            self.__q_std_list,
+            strict=False,
         ):
             kl_div = self.__kl_divergence(p_mean, p_std, q_mean, q_std)
             # RSSI の減衰関数を適用した上で KLダイバージェンスを重み付け
