@@ -37,9 +37,9 @@ class TransmitterAggregate:
 
     def is_match_connection(self, transmitter: "TransmitterAggregate") -> bool:
         """
-        BLEの場合はaddress、WIFIの場合はmac_addressの一致率を計測, そして閾値を超えたらTrueを返す
+        BLEの場合はmac_address、WIFIの場合はmac_addressの一致率を計測, そして閾値を超えたらTrueを返す
         """
-        # BLEのaddress一致率を計測
+        # BLEのmac_address一致率を計測
         ble_address_match_ratio = self.__ble_collection.measuring_match_rates(
             transmitter.__ble_collection
         )
