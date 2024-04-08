@@ -59,7 +59,11 @@ class SpotGateway:
     ) -> Optional[SpotRecord]:
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO spots (id, name, floor, location_type) VALUES (%s, %s, %s, %s) RETURNING id, name, floor, location_type, created_at",
+                """
+                INSERT INTO spots (id, name, floor, location_type)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id, name, floor, location_type, created_at
+                """,
                 (
                     id,
                     name,

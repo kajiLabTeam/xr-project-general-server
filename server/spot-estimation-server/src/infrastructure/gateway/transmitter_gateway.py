@@ -64,7 +64,11 @@ class TransmitterGateway:
     ) -> Optional[TransmitterRecord]:
         with conn.cursor() as cursor:
             cursor.executemany(
-                "INSERT INTO wifis (id, name, mac_address, rssi, spot_id) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, mac_address",
+                """
+                INSERT INTO wifis (id, name, mac_address, rssi, spot_id)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id, name, mac_address
+                """,
                 [
                     (
                         wifi.get_id_of_private_value(),
@@ -78,7 +82,11 @@ class TransmitterGateway:
             )
 
             cursor.executemany(
-                "INSERT INTO bles (id, name, rssi, mac_address, spot_id) VALUES (%s, %s, %s, %s, %s) RETURNING id, name, mac_address",
+                """
+                INSERT INTO bles (id, name, rssi, mac_address, spot_id)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id, name, mac_address
+                """,
                 [
                     (
                         ble.get_id_of_private_value(),

@@ -43,11 +43,11 @@ class FpModelRepository(FpModelRepositoryImpl):
                 fp_model = fp_model_gateway.download(
                     s3=s3, key=key, application=application
                 )
-            except InfrastructureError:
+            except InfrastructureError as err:
                 raise InfrastructureError(
                     InfrastructureErrorType.FP_MODEL_IS_NOT_FOUND,
                     "Failed to download fp model",
-                )
+                ) from err
 
             return FpModelAggregate(
                 fp_model_file=fp_model,

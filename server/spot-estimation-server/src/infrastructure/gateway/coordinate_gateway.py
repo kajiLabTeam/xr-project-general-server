@@ -43,7 +43,9 @@ class CoordinateGateway:
                 sql.SQL(", ").join(
                     [
                         sql.Literal((latitude, longitude))
-                        for latitude, longitude in zip(latitudes, longitudes)
+                        for latitude, longitude in zip(
+                            latitudes, longitudes, strict=False
+                        )
                     ]
                 )
             )

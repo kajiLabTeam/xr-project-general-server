@@ -1,3 +1,5 @@
+from typing import Optional
+
 from domain.models.fp_model.fp_model_id import FpModelAggregateId
 from domain.models.spot.coordinate import Coordinate
 from domain.models.spot.location_type import LocationType
@@ -13,9 +15,9 @@ class SpotAggregate:
         floor: int,
         location_type: LocationType,
         coordinate: Coordinate,
-        id: SpotAggregateId = SpotAggregateId(),
+        id: Optional[SpotAggregateId] = None,
     ) -> None:
-        self.__id = id
+        self.__id = id if id is not None else SpotAggregateId()
         self.__name = name
         self.__floor = floor
         self.__locationType = location_type
@@ -66,7 +68,7 @@ class SpotAggregateFactory:
         longitude: float,
         id: str | None = None,
     ) -> SpotAggregate:
-        if type(id) == str:
+        if isinstance(id, str):
             __id = SpotAggregateId(ULID.from_str(id))
         else:
             __id = SpotAggregateId()

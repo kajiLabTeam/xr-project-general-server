@@ -127,11 +127,11 @@ class SpotCollectionAggregateFactory:
             try:
                 uuid = ULID.from_str(spot_id)
                 ulid_collection.append(uuid)
-            except ValueError:
+            except ValueError as err:
                 raise DomainError(
                     DomainErrorType.INVALID_ULID,
                     "Invalid spot id",
-                )
+                ) from err
 
         return SpotCollectionAggregate(
             spot_id_collection=[SpotAggregateId(ulid) for ulid in ulid_collection]

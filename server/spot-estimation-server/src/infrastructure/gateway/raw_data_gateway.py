@@ -36,7 +36,11 @@ class RawDataGateway:
         with conn.cursor() as cursor:
             cursor.execute(
                 sql.SQL(
-                    "INSERT INTO raw_data (id, extension, spot_id) VALUES (%s, %s, %s) RETURNING id, extension, spot_id, created_at"
+                    """
+                    INSERT INTO raw_data (id, extension, spot_id)
+                    VALUES (%s, %s, %s)
+                    RETURNING id, extension, spot_id, created_at
+                    """
                 ),
                 (raw_data_id, extension, spot_id),
             )

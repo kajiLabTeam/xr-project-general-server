@@ -38,6 +38,7 @@ class GetSpotBySpotIdCollectionService:
         current_fp_model = FpModelAggregateFactory.create(
             raw_data=raw_data,
         )
+
         # 生データから接続中の発信機情報を抽出
         connecting_transmitter = TransmitterAggregateFactory.create(
             raw_data=raw_data,

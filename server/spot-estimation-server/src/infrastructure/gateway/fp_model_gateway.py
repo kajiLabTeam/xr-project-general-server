@@ -38,7 +38,11 @@ class FpModelGateway:
         with conn.cursor() as cursor:
             cursor.execute(
                 sql.SQL(
-                    "INSERT INTO fp_models (id, extension, spot_id) VALUES (%s, %s, %s) RETURNING id, extension, spot_id"
+                    """
+                    INSERT INTO fp_models (id, extension, spot_id)
+                    VALUES (%s, %s, %s)
+                    RETURNING id, extension, spot_id
+                    """
                 ),
                 (fp_model_id, extension, spot_id),
             )
