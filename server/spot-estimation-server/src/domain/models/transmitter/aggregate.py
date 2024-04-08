@@ -49,7 +49,7 @@ class TransmitterAggregate:
             transmitter.__wifi_collection
         )
 
-        print(f"BLEのaddress一致率: {ble_address_match_ratio}")
+        print(f"BLEのac_address一致率: {ble_address_match_ratio}")
         print(f"WIFIのmac_address一致率: {wifi_mac_match_ratio}")
 
         # BLEのaddressとWiFiのmac_addressの一致率を結合して合計を計算
