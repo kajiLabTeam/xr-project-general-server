@@ -12,6 +12,7 @@ from domain.repository_impl.spot_repository_impl import SpotRepositoryImpl
 from domain.repository_impl.transmitter_repository_impl import \
     TransmitterRepositoryImpl
 from infrastructure.connection import DBConnection, MinioConnection
+from infrastructure.gateway.raw_data_gateway import RawDataGateway
 
 
 class GetSpotBySpotIdCollectionService:
@@ -33,6 +34,17 @@ class GetSpotBySpotIdCollectionService:
     ) -> Optional[List[SpotAggregate]]:
         conn = DBConnection().connect()
         s3 = MinioConnection().connect()
+
+        print("raw_data")
+        # 生データを保存
+        raw_data_gateway = RawDataGateway()
+        key = f"get/{raw_data.get_id_private_value().get_id_of_private_value()}"
+        raw_data_gateway.upload(
+            s3=s3,
+            key=key,
+            raw_data_file=raw_data.get_raw_data_private_value(),
+            application=application,
+        )
 
         # 生データからFPモデルを生成
         current_fp_model = FpModelAggregateFactory.create(
