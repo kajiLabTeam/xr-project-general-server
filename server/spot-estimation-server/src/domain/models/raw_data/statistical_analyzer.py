@@ -42,7 +42,7 @@ class StatisticalAnalyzer:
 
         # 平均と標準偏差を導出
         mean_std_df = (
-            self.__raw_data_df.groupby("address")["rssi"]  # type: ignore
+            self.__raw_data_df.groupby(["address", "type"])["rssi"]  # type: ignore
             .agg(["mean", "std"])
             .reset_index()
         )

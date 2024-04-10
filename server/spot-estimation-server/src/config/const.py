@@ -2,6 +2,10 @@ from utils.ulid import generate_ulid
 
 APPLICATION_BUCKET_NAME: str = "applications"
 
+MEAN_NAME: str = "mean"
+STD_NAME: str = "std"
+TYPE_NAME: str = "type"
+
 BLE_NAME = "ble"
 
 WIFI_NAME = "wifi"
