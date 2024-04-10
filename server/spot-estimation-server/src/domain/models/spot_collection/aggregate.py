@@ -57,13 +57,15 @@ class SpotCollectionAggregate:
                 continue
         return spot_aggregate_list
 
-    # 発信機情報を元にスポットを特定する
     def identify_spot_by_transmitter(
         self,
         conn: connection,
         connecting_transmitter: TransmitterAggregate,
         transmitter_repository: TransmitterRepositoryImpl,
     ):
+        """
+        発信機情報を元にスポットを特定する
+        """
         # スポットIDの集約から発信機情報と一致しないスポットIDを削除
         for spot_id in self.__spot_id_collection:
             try:
