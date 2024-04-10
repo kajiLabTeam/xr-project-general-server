@@ -23,37 +23,45 @@ class TransmitterRepository(TransmitterRepositoryImpl):
         spot_id: SpotAggregateId,
     ) -> TransmitterAggregate:
         with conn as conn:
-            transmitter_record = transmitter_gateway.find_by_spot_id(
-                conn=conn,
-                spot_id=spot_id.get_id_of_private_value(),
-            )
-            if transmitter_record is None:
+            try:
+                transmitter_record = transmitter_gateway.find_by_spot_id(
+                    conn=conn,
+                    spot_id=spot_id.get_id_of_private_value(),
+                )
+                if transmitter_record is None:
+                    raise InfrastructureError(
+                        InfrastructureErrorType.TRANSMITTER_IS_NOT_FOUND,
+                        "Failed to find transmitter",
+                    )
+
+                ble_collection: List[Ble] = [
+                    Ble(
+                        name=ble_record.get_name_of_private_value(),
+                        mac_address=ble_record.get_mac_address_of_private_value(),
+                        rssi=ble_record.get_rssi_of_private_value(),
+                    )
+                    for ble_record in transmitter_record.get_ble_record_collection_of_private_value()
+                ]
+                wifi_collection: List[Wifi] = [
+                    Wifi(
+                        name=wifi_record.get_name_of_private_value(),
+                        mac_address=wifi_record.get_mac_address_of_private_value(),
+                        rssi=wifi_record.get_rssi_of_private_value(),
+                    )
+                    for wifi_record in transmitter_record.get_wifi_record_collection_of_private_value()
+                ]
+
+                return TransmitterAggregateInfrastructureFactory.create(
+                    ble_collection=ble_collection,
+                    wifi_collection=wifi_collection,
+                )
+            except InfrastructureError as err:
                 raise InfrastructureError(
                     InfrastructureErrorType.TRANSMITTER_IS_NOT_FOUND,
                     "Failed to find transmitter",
-                )
-
-            ble_collection: List[Ble] = [
-                Ble(
-                    name=ble_record.get_name_of_private_value(),
-                    mac_address=ble_record.get_mac_address_of_private_value(),
-                    rssi=ble_record.get_rssi_of_private_value(),
-                )
-                for ble_record in transmitter_record.get_ble_record_collection_of_private_value()
-            ]
-            wifi_collection: List[Wifi] = [
-                Wifi(
-                    name=wifi_record.get_name_of_private_value(),
-                    mac_address=wifi_record.get_mac_address_of_private_value(),
-                    rssi=wifi_record.get_rssi_of_private_value(),
-                )
-                for wifi_record in transmitter_record.get_wifi_record_collection_of_private_value()
-            ]
-
-            return TransmitterAggregateInfrastructureFactory.create(
-                ble_collection=ble_collection,
-                wifi_collection=wifi_collection,
-            )
+                ) from err
+            finally:
+                conn.close()
 
     def save(
         self,
@@ -62,22 +70,30 @@ class TransmitterRepository(TransmitterRepositoryImpl):
         transmitter: TransmitterAggregate,
     ) -> TransmitterAggregate:
         with conn as conn:
-            transmitter_record = TransmitterRecordFactory.create(
-                transmitter.get_ble_collection_of_private_value(),
-                transmitter.get_wifi_collection_of_private_value(),
-            )
+            try:
+                transmitter_record = TransmitterRecordFactory.create(
+                    transmitter.get_ble_collection_of_private_value(),
+                    transmitter.get_wifi_collection_of_private_value(),
+                )
 
-            transmitter_insert_result = transmitter_gateway.save(
-                conn=conn,
-                spot_id=spot_id.get_id_of_private_value(),
-                ble_collection=transmitter_record.get_ble_record_collection_of_private_value(),
-                wifi_collection=transmitter_record.get_wifi_record_collection_of_private_value(),
-            )
-            if transmitter_insert_result is None:
+                transmitter_insert_result = transmitter_gateway.save(
+                    conn=conn,
+                    spot_id=spot_id.get_id_of_private_value(),
+                    ble_collection=transmitter_record.get_ble_record_collection_of_private_value(),
+                    wifi_collection=transmitter_record.get_wifi_record_collection_of_private_value(),
+                )
+                if transmitter_insert_result is None:
+                    raise InfrastructureError(
+                        InfrastructureErrorType.TRANSMITTER_INSERT_ERROR,
+                        "Failed to save transmitter",
+                    )
+
+                # TODO: 保存したデータを取得して返す
+                return transmitter
+            except InfrastructureError as err:
                 raise InfrastructureError(
                     InfrastructureErrorType.TRANSMITTER_INSERT_ERROR,
                     "Failed to save transmitter",
-                )
-
-            # TODO: 保存したデータを取得して返す
-            return transmitter
+                ) from err
+            finally:
+                conn.close()

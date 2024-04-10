@@ -14,7 +14,10 @@ class SpotGateway:
             cursor.execute("SELECT * FROM spots WHERE id = %s", (spot_id,))
             spot_select_result = cursor.fetchone()
             if spot_select_result is None:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return SpotRecord(
                 id=spot_select_result[0],
@@ -34,7 +37,10 @@ class SpotGateway:
             cursor.execute("SELECT * FROM spots WHERE id = ANY(%s)", (spot_ids,))
             spot_select_result = cursor.fetchall()
             if not spot_select_result:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return SpotCollectionRecord(
                 spot_record_collection=[
@@ -75,7 +81,10 @@ class SpotGateway:
             inserted_data = cursor.fetchone()
 
             if inserted_data is None:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return SpotRecord(
                 id=inserted_data[0],

@@ -22,6 +22,8 @@ class FpModelGateway:
             if data is None:
                 return None
 
+            cursor.close()
+
             return FpModelRecord(
                 id=data[0],
                 extension=data[1],
@@ -49,6 +51,8 @@ class FpModelGateway:
             inserted_data = cursor.fetchone()
             if inserted_data is None:
                 return None
+
+            cursor.close()
 
             return FpModelRecord(
                 id=inserted_data[0],

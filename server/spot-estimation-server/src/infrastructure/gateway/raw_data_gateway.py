@@ -21,7 +21,10 @@ class RawDataGateway:
 
             data = cursor.fetchone()
             if data is None:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return RawDataRecord(
                 id=data[0],
@@ -46,7 +49,10 @@ class RawDataGateway:
             )
             inserted_data = cursor.fetchone()
             if inserted_data is None:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return RawDataRecord(
                 id=inserted_data[0],

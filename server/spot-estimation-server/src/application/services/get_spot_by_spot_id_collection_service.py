@@ -35,7 +35,6 @@ class GetSpotBySpotIdCollectionService:
         conn = DBConnection().connect()
         s3 = MinioConnection().connect()
 
-        print("raw_data")
         # 生データを保存
         raw_data_gateway = RawDataGateway()
         key = f"get/{raw_data.get_id_private_value().get_id_of_private_value()}"

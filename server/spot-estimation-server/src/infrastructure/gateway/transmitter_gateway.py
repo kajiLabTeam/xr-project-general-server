@@ -28,7 +28,10 @@ class TransmitterGateway:
             ble_data = cursor.fetchall()
 
             if not wifi_data and not ble_data:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             wifi_collection = [
                 WifiRecord(
@@ -98,6 +101,8 @@ class TransmitterGateway:
                     for ble in ble_collection
                 ],
             )
+
+            cursor.close()
 
         return TransmitterRecord(
             ble_record_collection=ble_collection,
