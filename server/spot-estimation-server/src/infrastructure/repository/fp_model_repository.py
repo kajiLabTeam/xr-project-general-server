@@ -49,9 +49,6 @@ class FpModelRepository(FpModelRepositoryImpl):
                     "Failed to download fp model",
                 ) from err
 
-            finally:
-                conn.close()
-
             return FpModelAggregate(
                 fp_model_file=fp_model,
                 extension=fp_model_record.get_extension_of_private_value(),
@@ -100,5 +97,3 @@ class FpModelRepository(FpModelRepositoryImpl):
                     InfrastructureErrorType.FP_MODEL_IS_NOT_FOUND,
                     "Failed to download fp model",
                 ) from err
-            finally:
-                conn.close()

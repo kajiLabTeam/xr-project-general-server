@@ -52,8 +52,6 @@ class RawDataRepository(RawDataRepositoryImpl):
                     InfrastructureErrorType.RAW_DATA_IS_NOT_FOUND,
                     "Failed to download raw data",
                 ) from err
-            finally:
-                conn.close()
 
     def save(
         self,
@@ -98,5 +96,3 @@ class RawDataRepository(RawDataRepositoryImpl):
                     InfrastructureErrorType.RAW_DATA_INSERT_ERROR,
                     "Failed to upload raw data",
                 ) from err
-            finally:
-                conn.close()

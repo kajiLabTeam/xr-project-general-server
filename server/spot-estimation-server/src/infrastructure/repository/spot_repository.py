@@ -52,8 +52,6 @@ class SpotRepository(SpotRepositoryImpl):
                     InfrastructureErrorType.SPOT_IS_NOT_FOUND,
                     "Failed to find spot",
                 ) from err
-            finally:
-                conn.close()
 
     def save(
         self,
@@ -101,5 +99,3 @@ class SpotRepository(SpotRepositoryImpl):
                     InfrastructureErrorType.SPOT_INSERT_ERROR,
                     "Error: SpotRepository.save",
                 ) from err
-            finally:
-                conn.close()

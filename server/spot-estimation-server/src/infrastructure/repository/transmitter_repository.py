@@ -60,8 +60,6 @@ class TransmitterRepository(TransmitterRepositoryImpl):
                     InfrastructureErrorType.TRANSMITTER_IS_NOT_FOUND,
                     "Failed to find transmitter",
                 ) from err
-            finally:
-                conn.close()
 
     def save(
         self,
@@ -95,5 +93,3 @@ class TransmitterRepository(TransmitterRepositoryImpl):
                     InfrastructureErrorType.TRANSMITTER_INSERT_ERROR,
                     "Failed to save transmitter",
                 ) from err
-            finally:
-                conn.close()
