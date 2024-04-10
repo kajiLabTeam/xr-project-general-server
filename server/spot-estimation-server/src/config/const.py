@@ -3,7 +3,9 @@ from utils.ulid import generate_ulid
 APPLICATION_BUCKET_NAME: str = "applications"
 
 BLE_NAME = "ble"
+
 WIFI_NAME = "wifi"
+WIFI_MAC_ADDRESS_COINCIDENT_RATIO_THRESHOLD: float = 0.6
 
 TRANSMITTER_RSSI_THRESHOLD: int = -80
 TRANSMITTER_THRESHOLD_NUMBER: int = 2
