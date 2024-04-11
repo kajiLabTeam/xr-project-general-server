@@ -62,6 +62,14 @@ class GetSpotBySpotIdCollectionService:
             transmitter_repository=self.__transmitter_repository,
         )
 
+        # 発信機情報のみで単一のスポットが特定できた場合
+        if len(spot_collection.get_id_collection_of_private_value()) == 1:
+            spot = self.__spot_repository.find_for_spot_id(
+                conn=conn,
+                spot_id=spot_collection.get_id_collection_of_private_value()[0],
+            )
+            return [spot]
+
         # スポットが特定できなかった場合
         if len(spot_collection.get_id_collection_of_private_value()) == 0:
             return None
