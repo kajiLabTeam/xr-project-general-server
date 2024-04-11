@@ -68,7 +68,7 @@ class TransmitterGateway:
         with conn.cursor() as cursor:
             cursor.executemany(
                 """
-                INSERT INTO wifis (id, name, mac_address, rssi, spot_id)
+                INSERT INTO wifis (id, name, rssi, mac_address, spot_id)
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id, name, mac_address
                 """,
@@ -76,8 +76,8 @@ class TransmitterGateway:
                     (
                         wifi.get_id_of_private_value(),
                         wifi.get_name_of_private_value(),
-                        wifi.get_mac_address_of_private_value(),
                         wifi.get_rssi_of_private_value(),
+                        wifi.get_mac_address_of_private_value(),
                         spot_id,
                     )
                     for wifi in wifi_collection

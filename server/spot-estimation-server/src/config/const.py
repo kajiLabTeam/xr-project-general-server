@@ -6,9 +6,9 @@ MEAN_NAME: str = "mean"
 STD_NAME: str = "std"
 TYPE_NAME: str = "type"
 
-BLE_NAME = "ble"
+BLE_NAME: str = "ble"
 
-WIFI_NAME = "wifi"
+WIFI_NAME: str = "wifi"
 WIFI_MAC_ADDRESS_COINCIDENT_RATIO_THRESHOLD: float = 0.6
 
 TRANSMITTER_RSSI_THRESHOLD: int = -80
