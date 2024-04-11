@@ -74,6 +74,20 @@ class SpotCollectionAggregate:
                     conn=conn,
                     spot_id=spot_id,
                 )
+                count = 0
+
+                for ble in candidate_transmitter.get_ble_collection_of_private_value():
+                    if count <= 3:
+                        print(ble.get_id_of_private_value().get_id_of_private_value())
+                    count += 1
+
+                count = 0
+                for (
+                    wifi
+                ) in candidate_transmitter.get_wifi_collection_of_private_value():
+                    if count <= 3:
+                        print(wifi.get_id_of_private_value().get_id_of_private_value())
+                    count += 1
 
                 # 発信機の一致率が閾値を超えていない場合、スポットIDの集約から削除
                 if not candidate_transmitter.is_match_connection(

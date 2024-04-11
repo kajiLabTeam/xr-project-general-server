@@ -50,22 +50,22 @@ class WifiCollection:
     # mac_addressの一致率を計測
     def measuring_match_rates(self, wifi_collection: "WifiCollection") -> float:
         # WiFiのMACアドレスを集合に変換
-        wifi_mac_set = {
+        wifi_mac_address_set = {
             wifi.get_mac_address_of_private_value()
             for wifi in self.get_wifi_list_of_private_value()
         }
 
         # 比較対象のWiFiコレクションのMACアドレスを集合に変換
-        compare_mac_set = {
+        compare_mac_address_set = {
             wifi.get_mac_address_of_private_value()
             for wifi in wifi_collection.get_wifi_list_of_private_value()
         }
 
         # 一致するMACアドレスの数を計算
-        match_count = len(wifi_mac_set.intersection(compare_mac_set))
+        match_count = len(wifi_mac_address_set.intersection(compare_mac_address_set))
 
         # MACアドレスの数を取得
-        total_mac_addresses = max(len(wifi_mac_set), 1)
+        total_mac_addresses = max(len(wifi_mac_address_set), 1)
 
         # 一致率を計算
         match_ratio = match_count / total_mac_addresses
