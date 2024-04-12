@@ -32,8 +32,13 @@ export class GetObjectCollectionBySpotIdService {
       objectCollection &&
       objectCollection.getObjectsOfPrivateValue().length === 0
     ) {
+      s3.destroy();
+      await conn.end();
       return undefined;
     }
+
+    s3.destroy();
+    await conn.end();
 
     return objectCollection;
   }

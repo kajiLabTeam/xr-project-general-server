@@ -30,6 +30,8 @@ export class GetObjectBySpotIdService {
       application,
     );
     if (!objectRepositoryResult) {
+      s3.destroy();
+      await conn.end();
       return undefined;
     }
 
@@ -43,6 +45,9 @@ export class GetObjectBySpotIdService {
       objectIdResult,
     );
     await this._objectBrowsingLogRepository.save(conn, objectBrowsingLog);
+
+    s3.destroy();
+    await conn.end();
 
     return objectRepositoryResult;
   }

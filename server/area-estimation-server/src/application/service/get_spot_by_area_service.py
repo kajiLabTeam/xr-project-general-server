@@ -32,3 +32,5 @@ class GetSpotCollectionByAreaService:
                 or e.type is InfrastructureErrorType.SPOT_IS_NOT_FOUND
             ):
                 return None
+        finally:
+            conn.close()

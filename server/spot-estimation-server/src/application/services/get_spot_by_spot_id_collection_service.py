@@ -91,4 +91,7 @@ class GetSpotBySpotIdCollectionService:
         if len(spot_list) == 0:
             return None
 
+        s3.close()
+        conn.close()
+
         return spot_list
