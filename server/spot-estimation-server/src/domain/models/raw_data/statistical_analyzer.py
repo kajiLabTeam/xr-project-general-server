@@ -3,7 +3,7 @@ from io import BytesIO
 import numpy as np
 import pandas as pd
 from config.const import (AVOID_ZERO_STD, TRANSMITTER_RSSI_THRESHOLD,
-                          WIFI_MAC_ADDRESS_NUMBER_THRESHOLD)
+                          TRANSMITTER_THRESHOLD_NUMBER)
 
 
 class StatisticalAnalyzer:
@@ -29,7 +29,7 @@ class StatisticalAnalyzer:
             counts_raw_data_df_by_address, on="address"
         )
         self.__raw_data_df = self.__raw_data_df[
-            self.__raw_data_df["count"] >= WIFI_MAC_ADDRESS_NUMBER_THRESHOLD
+            self.__raw_data_df["count"] >= TRANSMITTER_THRESHOLD_NUMBER
         ]
         self.__raw_data_df.drop("count", axis=1, inplace=True)  # type: ignore
 
