@@ -94,9 +94,6 @@ func (goss *GetObjectBySpotService) Run(
 		return &userId, nil, areaObjects, nil
 	}
 
-	// areaObjectsに存在するspotObjectsとの重複を削除
-	areaObjects.RemoveObjectByIds(spotObjects.GetObjectIds())
-
 	// オブジェクト構造体にスポット構造体をリンク
 	spotObjects.LinkSpots(spots)
 
