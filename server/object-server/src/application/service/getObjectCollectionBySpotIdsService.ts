@@ -18,8 +18,8 @@ export class GetObjectCollectionBySpotIdService {
     application: ApplicationAggregate,
   ): Promise<ObjectCollectionAggregate | undefined> {
     // MinioとDBに接続する
+    const conn = DBConnection.connect();
     const s3 = await MinioConnection.connect();
-    const conn = await DBConnection.connect();
 
     // オブジェクト配列で取得する
     const objectCollection = await this._objectCollectionRepository.findByIds(
@@ -33,12 +33,10 @@ export class GetObjectCollectionBySpotIdService {
       objectCollection.getObjectsOfPrivateValue().length === 0
     ) {
       s3.destroy();
-      await conn.end();
       return undefined;
     }
 
     s3.destroy();
-    await conn.end();
 
     return objectCollection;
   }

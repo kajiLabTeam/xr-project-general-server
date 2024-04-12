@@ -16,8 +16,8 @@ export class CreateObjectService {
     application: ApplicationAggregate,
   ): Promise<ObjectAggregate | undefined> {
     // MinioとDBに接続する
+    const conn = DBConnection.connect();
     const s3 = await MinioConnection.connect();
-    const conn = await DBConnection.connect();
 
     // オブジェクトを生成する
     const object = new ObjectAggregate(extension, user, spotId);
@@ -32,12 +32,11 @@ export class CreateObjectService {
     // オブジェクトが保存できなかった場合
     if (!objectRepositoryResult) {
       s3.destroy();
-      await conn.end();
+
       return undefined;
     }
 
     s3.destroy();
-    await conn.end();
 
     return objectRepositoryResult;
   }
