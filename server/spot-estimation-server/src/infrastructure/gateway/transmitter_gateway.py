@@ -28,7 +28,10 @@ class TransmitterGateway:
             ble_data = cursor.fetchall()
 
             if not wifi_data and not ble_data:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             wifi_collection = [
                 WifiRecord(
@@ -65,7 +68,7 @@ class TransmitterGateway:
         with conn.cursor() as cursor:
             cursor.executemany(
                 """
-                INSERT INTO wifis (id, name, mac_address, rssi, spot_id)
+                INSERT INTO wifis (id, name, rssi, mac_address, spot_id)
                 VALUES (%s, %s, %s, %s, %s)
                 RETURNING id, name, mac_address
                 """,
@@ -73,8 +76,8 @@ class TransmitterGateway:
                     (
                         wifi.get_id_of_private_value(),
                         wifi.get_name_of_private_value(),
-                        wifi.get_mac_address_of_private_value(),
                         wifi.get_rssi_of_private_value(),
+                        wifi.get_mac_address_of_private_value(),
                         spot_id,
                     )
                     for wifi in wifi_collection
@@ -98,6 +101,8 @@ class TransmitterGateway:
                     for ble in ble_collection
                 ],
             )
+
+            cursor.close()
 
         return TransmitterRecord(
             ble_record_collection=ble_collection,

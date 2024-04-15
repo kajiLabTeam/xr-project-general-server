@@ -3,10 +3,13 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { MinioEnv, PostgresEnv } from '../config/env';
 
 export class DBConnection {
-  static async connect(): Promise<Pool> {
+  private static instance: DBConnection;
+  private pool: Pool;
+
+  private constructor() {
     const postgresEnv = new PostgresEnv();
 
-    const client = new Pool({
+    const pool = new Pool({
       user: postgresEnv.getUserOfPrivateValue(),
       host: postgresEnv.getHostOfPrivateValue(),
       database: postgresEnv.getDatabaseOfPrivateValue(),
@@ -14,7 +17,15 @@ export class DBConnection {
       port: parseInt(postgresEnv.getPortOfPrivateValue()!),
     });
 
-    return client.connect().then(() => client);
+    this.pool = pool;
+  }
+
+  public static connect(): Pool {
+    if (!DBConnection.instance) {
+      DBConnection.instance = new DBConnection();
+    }
+
+    return DBConnection.instance.pool;
   }
 }
 

@@ -80,4 +80,7 @@ class CreateSpotService:
         spot.link_to_aggregate_fp_model(fp_model.get_id_of_private_value())
         spot.link_to_aggregate_transmitter(transmitter)
 
+        s3.close()
+        conn.close()
+
         return spot

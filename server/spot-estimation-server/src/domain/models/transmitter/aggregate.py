@@ -1,6 +1,6 @@
 from typing import List
 
-from config.const import TRANSMITTER_COINCIDENT_RATIO_THRESHOLD
+from config.const import WIFI_MAC_ADDRESS_COINCIDENT_RATIO_THRESHOLD
 from domain.models.raw_data.aggregate import RawDataAggregate
 from domain.models.transmitter.ble import Ble, BleCollection
 from domain.models.transmitter.ble_id import BleId
@@ -52,11 +52,13 @@ class TransmitterAggregate:
         print(f"BLEのmac_address一致率: {ble_address_match_ratio}")
         print(f"WIFIのmac_address一致率: {wifi_mac_match_ratio}")
 
+        return wifi_mac_match_ratio >= WIFI_MAC_ADDRESS_COINCIDENT_RATIO_THRESHOLD
+
         # BLEのaddressとWiFiのmac_addressの一致率を結合して合計を計算
-        total_match_ratio = (ble_address_match_ratio + wifi_mac_match_ratio) / 2
+        # total_match_ratio = (ble_address_match_ratio + wifi_mac_match_ratio) / 2
 
         # 合計が閾値を超えたらTrueを返す
-        return total_match_ratio >= TRANSMITTER_COINCIDENT_RATIO_THRESHOLD
+        # return total_match_ratio >= TRANSMITTER_COINCIDENT_RATIO_THRESHOLD
 
 
 class TransmitterAggregateFactory:

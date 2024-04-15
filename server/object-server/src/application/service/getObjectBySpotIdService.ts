@@ -19,8 +19,8 @@ export class GetObjectBySpotIdService {
     application: ApplicationAggregate,
   ): Promise<ObjectAggregate | undefined> {
     // MinioとDBに接続する
+    const conn = DBConnection.connect();
     const s3 = await MinioConnection.connect();
-    const conn = await DBConnection.connect();
 
     // オブジェクトを取得する
     const objectRepositoryResult = await this._objectRepository.findById(
@@ -30,6 +30,7 @@ export class GetObjectBySpotIdService {
       application,
     );
     if (!objectRepositoryResult) {
+      s3.destroy();
       return undefined;
     }
 
@@ -43,6 +44,8 @@ export class GetObjectBySpotIdService {
       objectIdResult,
     );
     await this._objectBrowsingLogRepository.save(conn, objectBrowsingLog);
+
+    s3.destroy();
 
     return objectRepositoryResult;
   }

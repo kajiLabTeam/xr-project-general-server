@@ -53,6 +53,8 @@ class GetSpotBySpotIdCollectionService:
 
         # スポットが特定できなかった場合
         if len(spot_collection.get_id_collection_of_private_value()) == 0:
+            s3.close()
+            conn.close()
             return None
 
         # FPモデルを元にスポットを一意に特定する
@@ -70,6 +72,11 @@ class GetSpotBySpotIdCollectionService:
         )
 
         if len(spot_list) == 0:
+            s3.close()
+            conn.close()
             return None
+
+        s3.close()
+        conn.close()
 
         return spot_list

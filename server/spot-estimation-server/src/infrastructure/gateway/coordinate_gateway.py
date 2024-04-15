@@ -20,7 +20,10 @@ class CoordinateGateway:
 
             results = cursor.fetchall()
             if not results:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return CoordinateRecord(
                 id=results[0][0],
@@ -54,7 +57,10 @@ class CoordinateGateway:
 
             results = cursor.fetchall()
             if not results:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return CoordinateCollectionRecord(
                 coordinates=[
@@ -89,7 +95,10 @@ class CoordinateGateway:
 
             inserted_data = cursor.fetchone()
             if inserted_data is None:
+                cursor.close()
                 return None
+
+            cursor.close()
 
             return CoordinateRecord(
                 id=inserted_data[0],

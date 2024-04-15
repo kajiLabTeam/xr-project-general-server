@@ -3,7 +3,7 @@ from typing import Any, List
 
 import numpy as np
 import pandas as pd
-from config.const import EPSILON
+from config.const import EPSILON, MEAN_NAME, STD_NAME, WIFI_NAME
 from scipy import integrate  # type: ignore
 
 
@@ -15,10 +15,18 @@ class NormalDistributionComparator:
     ) -> None:
         p_df = pd.read_csv(BytesIO(p_fp_model_file_bytes))  # type: ignore
         q_df = pd.read_csv(BytesIO(q_fp_model_file_bytes))  # type: ignore
-        self.__p_mean_list: List[float] = p_df["mean"]  # type: ignore
-        self.__p_std_list: List[float] = p_df["std"]  # type: ignore
-        self.__q_mean_list: List[float] = q_df["mean"]  # type: ignore
-        self.__q_std_list: List[float] = q_df["std"]  # type: ignore
+        self.__p_mean_list: List[float] = p_df.loc[
+            p_df["type"] == WIFI_NAME, MEAN_NAME
+        ].tolist()
+        self.__p_std_list: List[float] = p_df.loc[
+            p_df["type"] == WIFI_NAME, STD_NAME
+        ].tolist()
+        self.__q_mean_list: List[float] = q_df.loc[
+            q_df["type"] == WIFI_NAME, MEAN_NAME
+        ].tolist()
+        self.__q_std_list: List[float] = q_df.loc[
+            q_df["type"] == WIFI_NAME, STD_NAME
+        ].tolist()
 
     def __normal_pdf(self, x: Any, mean: float, std: float) -> Any:
         """

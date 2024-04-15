@@ -22,30 +22,36 @@ class RawDataRepository(RawDataRepositoryImpl):
         application: ApplicationAggregate,
     ) -> RawDataAggregate:
         with conn as conn:
-            raw_data_record = raw_data_gateway.find_by_spot_id(
-                conn=conn,
-                spot_id=spot_id.get_id_of_private_value(),
-            )
-            if raw_data_record is None:
-                raise InfrastructureError(
-                    InfrastructureErrorType.RAW_DATA_IS_NOT_FOUND,
-                    "Failed to find raw data",
+            try:
+                raw_data_record = raw_data_gateway.find_by_spot_id(
+                    conn=conn,
+                    spot_id=spot_id.get_id_of_private_value(),
+                )
+                if raw_data_record is None:
+                    raise InfrastructureError(
+                        InfrastructureErrorType.RAW_DATA_IS_NOT_FOUND,
+                        "Failed to find raw data",
+                    )
+
+                key = (
+                    spot_id.get_id_of_private_value()
+                    + raw_data_record.get_extension_of_private_value()
+                )
+                raw_data_file = raw_data_gateway.download(
+                    s3=s3,
+                    key=key,
+                    application=application,
                 )
 
-            key = (
-                spot_id.get_id_of_private_value()
-                + raw_data_record.get_extension_of_private_value()
-            )
-            raw_data_file = raw_data_gateway.download(
-                s3=s3,
-                key=key,
-                application=application,
-            )
-
-            return RawDataAggregate(
-                extension=raw_data_record.get_extension_of_private_value(),
-                raw_data_file=raw_data_file,
-            )
+                return RawDataAggregate(
+                    extension=raw_data_record.get_extension_of_private_value(),
+                    raw_data_file=raw_data_file,
+                )
+            except InfrastructureError as err:
+                raise InfrastructureError(
+                    InfrastructureErrorType.RAW_DATA_IS_NOT_FOUND,
+                    "Failed to download raw data",
+                ) from err
 
     def save(
         self,
@@ -56,31 +62,37 @@ class RawDataRepository(RawDataRepositoryImpl):
         application: ApplicationAggregate,
     ) -> RawDataAggregate:
         with conn as conn:
-            raw_data_insert_result = raw_data_gateway.save(
-                conn=conn,
-                raw_data_id=raw_data.get_id_private_value().get_id_of_private_value(),
-                extension=raw_data.get_extension_private_value(),
-                spot_id=spot_id.get_id_of_private_value(),
-            )
-            if raw_data_insert_result is None:
-                raise InfrastructureError(
-                    InfrastructureErrorType.RAW_DATA_INSERT_ERROR,
-                    "Failed to insert raw data",
+            try:
+                raw_data_insert_result = raw_data_gateway.save(
+                    conn=conn,
+                    raw_data_id=raw_data.get_id_private_value().get_id_of_private_value(),
+                    extension=raw_data.get_extension_private_value(),
+                    spot_id=spot_id.get_id_of_private_value(),
+                )
+                if raw_data_insert_result is None:
+                    raise InfrastructureError(
+                        InfrastructureErrorType.RAW_DATA_INSERT_ERROR,
+                        "Failed to insert raw data",
+                    )
+
+                key = (
+                    spot_id.get_id_of_private_value()
+                    + "."
+                    + raw_data.get_extension_private_value()
+                )
+                raw_data_upload_result = raw_data_gateway.upload(
+                    s3=s3,
+                    key=key,
+                    raw_data_file=raw_data.get_raw_data_private_value(),
+                    application=application,
                 )
 
-            key = (
-                spot_id.get_id_of_private_value()
-                + "."
-                + raw_data.get_extension_private_value()
-            )
-            raw_data_upload_result = raw_data_gateway.upload(
-                s3=s3,
-                key=key,
-                raw_data_file=raw_data.get_raw_data_private_value(),
-                application=application,
-            )
-
-            return RawDataAggregate(
-                extension=raw_data.get_extension_private_value(),
-                raw_data_file=raw_data_upload_result,
-            )
+                return RawDataAggregate(
+                    extension=raw_data.get_extension_private_value(),
+                    raw_data_file=raw_data_upload_result,
+                )
+            except InfrastructureError as err:
+                raise InfrastructureError(
+                    InfrastructureErrorType.RAW_DATA_INSERT_ERROR,
+                    "Failed to upload raw data",
+                ) from err
